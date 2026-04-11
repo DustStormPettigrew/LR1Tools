@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <AssemblyName>LR1Tools</AssemblyName>
+    <RootNamespace>LR1Tools</RootNamespace>
+    <LangVersion>latest</LangVersion>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\LibLR1\LibLR1\LibLR1.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Tester\**\*.cs" />
+    <EmbeddedResource Remove="Tester\**\*" />
+    <None Remove="Tester\**\*" />
+  </ItemGroup>
+
+</Project>

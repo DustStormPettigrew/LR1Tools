@@ -12,8 +12,9 @@ namespace LR1Tools.Adapters
 		public static TrackScene ToScene(RRB p_source, string p_sceneName = null)
 		{
 			TrackScene scene = new TrackScene();
+			scene.ExportType = TrackSceneExportTypes.PathSet;
 			scene.Name = string.IsNullOrEmpty(p_sceneName) ? "RRBScene" : p_sceneName;
-			scene.SourceName = "RRB";
+			AdapterCommon.SetSceneProvenance(scene, "RRB", scene.Name);
 
 			TrackPath path = ToPath(p_source, scene.Name + ".Path");
 			TrackMesh mesh = ToMesh(p_source, scene.Name + ".PathMesh");
@@ -22,7 +23,7 @@ namespace LR1Tools.Adapters
 			pathObject.Name = scene.Name + ".PathObject";
 			pathObject.MeshName = mesh.Name;
 			pathObject.PathName = path.Name;
-			pathObject.Metadata["SourceFormat"] = "RRB";
+			AdapterCommon.SetObjectProvenance(pathObject, "RRB", pathObject.Name, path.Name, "0", 0);
 
 			scene.Paths.Add(path);
 			scene.Meshes.Add(mesh);
@@ -37,6 +38,7 @@ namespace LR1Tools.Adapters
 			TrackPath path = new TrackPath();
 			path.Name = string.IsNullOrEmpty(p_pathName) ? "RRBPath" : p_pathName;
 			path.Closed = false;
+			AdapterCommon.SetPathProvenance(path, "RRB", path.Name, path.Name, "0", 0);
 
 			List<TrackPathNode> nodes = BuildPathNodes(p_source);
 			for (int i = 0; i < nodes.Count; i++)
@@ -45,7 +47,6 @@ namespace LR1Tools.Adapters
 			}
 
 			AddSharedMetadata(path.Metadata, p_source);
-			AdapterCommon.AddMetadata(path.Metadata, "SourceFormat", "RRB");
 			return path;
 		}
 
@@ -54,6 +55,7 @@ namespace LR1Tools.Adapters
 			TrackMesh mesh = new TrackMesh();
 			mesh.Name = string.IsNullOrEmpty(p_meshName) ? "RRBPathMesh" : p_meshName;
 			mesh.IsCollisionMesh = false;
+			AdapterCommon.SetMeshProvenance(mesh, "RRB", mesh.Name, mesh.Name, "0", 0);
 
 			List<TrackPathNode> nodes = BuildPathNodes(p_source);
 			for (int i = 0; i < nodes.Count; i++)
@@ -80,7 +82,6 @@ namespace LR1Tools.Adapters
 			}
 
 			AddSharedMetadata(mesh.Metadata, p_source);
-			AdapterCommon.AddMetadata(mesh.Metadata, "SourceFormat", "RRB");
 			AdapterCommon.AddMetadata(mesh.Metadata, "PrimitiveTopology", "LineStrip");
 			return mesh;
 		}
@@ -88,7 +89,6 @@ namespace LR1Tools.Adapters
 		private static void AddSceneMetadata(Dictionary<string, string> p_metadata, RRB p_source)
 		{
 			AddSharedMetadata(p_metadata, p_source);
-			AdapterCommon.AddMetadata(p_metadata, "SourceFormat", "RRB");
 			AdapterCommon.AddMetadata(p_metadata, "NodeCount", p_source != null && p_source.Nodes != null ? p_source.Nodes.Length : 0);
 		}
 

@@ -13,8 +13,9 @@ namespace LR1Tools.Adapters
 		public static TrackScene ToScene(WDB p_source, string p_sceneName = null)
 		{
 			TrackScene scene = new TrackScene();
+			scene.ExportType = TrackSceneExportTypes.ObjectSet;
 			scene.Name = string.IsNullOrEmpty(p_sceneName) ? "WDBScene" : p_sceneName;
-			scene.SourceName = "WDB";
+			AdapterCommon.SetSceneProvenance(scene, "WDB", scene.Name);
 
 			if (p_source == null)
 			{
@@ -175,6 +176,7 @@ namespace LR1Tools.Adapters
 			if (p_model.ModelRef != null)
 			{
 				string gdbName = AdapterCommon.ResolveName(p_source.GDBs, p_model.ModelRef.IndexGDB, "GDB");
+				AdapterCommon.SetObjectProvenance(obj, "WDB", obj.Name, gdbName, p_name, p_model.ModelRef.IndexGDB);
 				obj.MeshName = NormalizeMeshReference(gdbName);
 				obj.Metadata["GDBIndex"] = p_model.ModelRef.IndexGDB.ToString(CultureInfo.InvariantCulture);
 				obj.Metadata["GDBName"] = gdbName;
@@ -211,6 +213,7 @@ namespace LR1Tools.Adapters
 				if (p_model.ModelRef.IndexGDB.HasValue)
 				{
 					string gdbName = AdapterCommon.ResolveName(p_source.GDBs, p_model.ModelRef.IndexGDB.Value, "GDB");
+					AdapterCommon.SetObjectProvenance(obj, "WDB", obj.Name, gdbName, p_name, p_model.ModelRef.IndexGDB.Value);
 					obj.MeshName = NormalizeMeshReference(gdbName);
 					obj.Metadata["GDBIndex"] = p_model.ModelRef.IndexGDB.Value.ToString(CultureInfo.InvariantCulture);
 					obj.Metadata["GDBName"] = gdbName;
@@ -253,6 +256,7 @@ namespace LR1Tools.Adapters
 			if (p_model.ModelRef != null)
 			{
 				string gdbName = AdapterCommon.ResolveName(p_source.GDBs, p_model.ModelRef.IndexGDB, "GDB");
+				AdapterCommon.SetObjectProvenance(obj, "WDB", obj.Name, gdbName, p_name, p_model.ModelRef.IndexGDB);
 				obj.MeshName = NormalizeMeshReference(gdbName);
 				obj.Metadata["BDBIndex"] = p_model.ModelRef.IndexBDB.ToString(CultureInfo.InvariantCulture);
 				obj.Metadata["BDBName"] = AdapterCommon.ResolveName(p_source.BDBs, p_model.ModelRef.IndexBDB, "BDB");
@@ -273,6 +277,7 @@ namespace LR1Tools.Adapters
 				string.Format(CultureInfo.InvariantCulture, "Billboard[{0}]", p_index),
 				"Billboard"
 			);
+			AdapterCommon.SetObjectProvenance(obj, "WDB", obj.Name, obj.Name, p_index.ToString(CultureInfo.InvariantCulture), p_index);
 
 			if (p_billboard == null)
 			{
@@ -303,6 +308,7 @@ namespace LR1Tools.Adapters
 		private static TrackObject CreateBvbModelObject(WDB p_source, string p_name, WDB_BVBModel p_model)
 		{
 			TrackObject obj = CreateObject(p_name, "BVBModel");
+			AdapterCommon.SetObjectProvenance(obj, "WDB", obj.Name, p_name, p_name, p_model != null ? p_model.ModelRef : (int?)null);
 			if (p_model == null)
 			{
 				return obj;
@@ -318,6 +324,7 @@ namespace LR1Tools.Adapters
 		private static TrackObject CreateCameraObject(string p_name, WDB_Camera p_camera)
 		{
 			TrackObject obj = CreateObject(p_name, "Camera");
+			AdapterCommon.SetObjectProvenance(obj, "WDB", obj.Name, p_name, p_name);
 			if (p_camera == null)
 			{
 				return obj;
@@ -340,6 +347,7 @@ namespace LR1Tools.Adapters
 		private static TrackObject CreateAmbientLightObject(string p_name, WDB_AmbientLight p_light)
 		{
 			TrackObject obj = CreateObject(p_name, "AmbientLight");
+			AdapterCommon.SetObjectProvenance(obj, "WDB", obj.Name, p_name, p_name);
 			if (p_light != null)
 			{
 				obj.Metadata["Color"] = AdapterCommon.FormatColor(p_light.Color, false);
@@ -350,6 +358,7 @@ namespace LR1Tools.Adapters
 		private static TrackObject CreateDirectionalLightObject(string p_name, WDB_DirectionalLight p_light)
 		{
 			TrackObject obj = CreateObject(p_name, "DirectionalLight");
+			AdapterCommon.SetObjectProvenance(obj, "WDB", obj.Name, p_name, p_name);
 			if (p_light != null)
 			{
 				obj.Transform.Rotation = AdapterCommon.CreateRotationFromForwardUp(p_light.Direction, null);
@@ -363,7 +372,7 @@ namespace LR1Tools.Adapters
 		{
 			TrackObject obj = new TrackObject();
 			obj.Name = p_name ?? string.Empty;
-			obj.Metadata["SourceFormat"] = "WDB";
+			AdapterCommon.SetObjectProvenance(obj, "WDB", obj.Name, p_name, p_name);
 			obj.Metadata["NativeType"] = p_nativeType;
 			return obj;
 		}

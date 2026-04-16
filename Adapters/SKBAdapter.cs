@@ -11,8 +11,9 @@ namespace LR1Tools.Adapters
 		public static TrackScene ToScene(SKB p_source, string p_sceneName = null)
 		{
 			TrackScene scene = new TrackScene();
+			scene.ExportType = TrackSceneExportTypes.MaterialSet;
 			scene.Name = string.IsNullOrEmpty(p_sceneName) ? "SKBScene" : p_sceneName;
-			scene.SourceName = "SKB";
+			AdapterCommon.SetSceneProvenance(scene, "SKB", scene.Name);
 
 			if (p_source == null)
 			{
@@ -59,7 +60,13 @@ namespace LR1Tools.Adapters
 			TrackMaterial material = new TrackMaterial();
 			material.Name = p_materialName ?? string.Empty;
 			material.DiffuseColor = SelectRepresentativeColor(p_source);
-			material.Metadata["SourceFormat"] = "SKB";
+			AdapterCommon.SetMaterialProvenance(
+				material,
+				"SKB",
+				material.Name,
+				p_sourceKey,
+				string.Format(CultureInfo.InvariantCulture, "{0}:{1}", p_setIndex, p_sourceKey ?? string.Empty),
+				p_setIndex);
 			material.Metadata["GradientSetIndex"] = p_setIndex.ToString(CultureInfo.InvariantCulture);
 			material.Metadata["GradientKey"] = p_sourceKey ?? string.Empty;
 			material.Metadata["UsesPreferredSetKey"] = string.Equals(p_sourceKey, p_preferredSet) ? "true" : "false";
@@ -76,7 +83,13 @@ namespace LR1Tools.Adapters
 		{
 			TrackGradient gradient = new TrackGradient();
 			gradient.Name = p_gradientName ?? string.Empty;
-			gradient.Metadata["SourceFormat"] = "SKB";
+			AdapterCommon.SetGradientProvenance(
+				gradient,
+				"SKB",
+				gradient.Name,
+				p_sourceKey,
+				string.Format(CultureInfo.InvariantCulture, "{0}:{1}", p_setIndex, p_sourceKey ?? string.Empty),
+				p_setIndex);
 			gradient.Metadata["GradientSetIndex"] = p_setIndex.ToString(CultureInfo.InvariantCulture);
 			gradient.Metadata["GradientKey"] = p_sourceKey ?? string.Empty;
 

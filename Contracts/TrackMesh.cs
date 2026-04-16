@@ -4,6 +4,12 @@ namespace LR1Tools.Contracts
 {
 	public class TrackMesh
 	{
+		public string Id { get; set; }
+		public string SourceId { get; set; }
+		public string SourceName { get; set; }
+		public string SourceFormat { get; set; }
+		public string SourcePath { get; set; }
+		public int? SourceIndex { get; set; }
 		public string Name { get; set; }
 		public string MaterialName { get; set; }
 		public bool IsCollisionMesh { get; set; }
@@ -13,6 +19,12 @@ namespace LR1Tools.Contracts
 
 		public TrackMesh()
 		{
+			Id = string.Empty;
+			SourceId = string.Empty;
+			SourceName = string.Empty;
+			SourceFormat = string.Empty;
+			SourcePath = string.Empty;
+			SourceIndex = null;
 			Name = string.Empty;
 			MaterialName = string.Empty;
 			Vertices = new List<TrackVertex>();

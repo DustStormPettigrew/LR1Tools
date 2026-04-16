@@ -8,11 +8,47 @@ namespace LR1Tools.Export
 		[JsonPropertyName("schema")]
 		public string Schema { get; set; }
 
+		[JsonPropertyName("id")]
+		public string Id { get; set; }
+
+		[JsonPropertyName("sourceId")]
+		public string SourceId { get; set; }
+
+		[JsonPropertyName("exportType")]
+		public string ExportType { get; set; }
+
 		[JsonPropertyName("name")]
 		public string Name { get; set; }
 
 		[JsonPropertyName("sourceName")]
 		public string SourceName { get; set; }
+
+		[JsonPropertyName("sourceFormat")]
+		public string SourceFormat { get; set; }
+
+		[JsonPropertyName("sourcePath")]
+		public string SourcePath { get; set; }
+
+		[JsonPropertyName("sourceIndex")]
+		public int? SourceIndex { get; set; }
+
+		[JsonPropertyName("coordinateSystem")]
+		public TrackCoordinateSystemJsonDto CoordinateSystem { get; set; }
+
+		[JsonPropertyName("handedness")]
+		public string Handedness { get; set; }
+
+		[JsonPropertyName("rightAxis")]
+		public string RightAxis { get; set; }
+
+		[JsonPropertyName("upAxis")]
+		public string UpAxis { get; set; }
+
+		[JsonPropertyName("forwardAxis")]
+		public string ForwardAxis { get; set; }
+
+		[JsonPropertyName("units")]
+		public string Units { get; set; }
 
 		[JsonPropertyName("metadata")]
 		public Dictionary<string, string> Metadata { get; set; }
@@ -20,23 +56,80 @@ namespace LR1Tools.Export
 		[JsonPropertyName("materials")]
 		public List<TrackMaterialJsonDto> Materials { get; set; }
 
+		[JsonPropertyName("materialAnimations")]
+		public List<TrackMaterialAnimationJsonDto> MaterialAnimations { get; set; }
+
 		[JsonPropertyName("meshes")]
 		public List<TrackMeshJsonDto> Meshes { get; set; }
 
 		[JsonPropertyName("objects")]
 		public List<TrackObjectJsonDto> Objects { get; set; }
 
+		[JsonPropertyName("startPositions")]
+		public List<TrackObjectJsonDto> StartPositions { get; set; }
+
+		[JsonPropertyName("checkpoints")]
+		public List<TrackObjectJsonDto> Checkpoints { get; set; }
+
+		[JsonPropertyName("powerups")]
+		public List<TrackObjectJsonDto> Powerups { get; set; }
+
+		[JsonPropertyName("hazards")]
+		public List<TrackObjectJsonDto> Hazards { get; set; }
+
+		[JsonPropertyName("emitters")]
+		public List<TrackObjectJsonDto> Emitters { get; set; }
+
 		[JsonPropertyName("paths")]
 		public List<TrackPathJsonDto> Paths { get; set; }
+
+		[JsonPropertyName("npcPaths")]
+		public List<TrackPathJsonDto> NpcPaths { get; set; }
 
 		[JsonPropertyName("gradients")]
 		public List<TrackGradientJsonDto> Gradients { get; set; }
 	}
 
+	internal sealed class TrackCoordinateSystemJsonDto
+	{
+		[JsonPropertyName("handedness")]
+		public string Handedness { get; set; }
+
+		[JsonPropertyName("rightAxis")]
+		public string RightAxis { get; set; }
+
+		[JsonPropertyName("upAxis")]
+		public string UpAxis { get; set; }
+
+		[JsonPropertyName("forwardAxis")]
+		public string ForwardAxis { get; set; }
+
+		[JsonPropertyName("units")]
+		public string Units { get; set; }
+	}
+
 	internal sealed class TrackMaterialJsonDto
 	{
+		[JsonPropertyName("id")]
+		public string Id { get; set; }
+
+		[JsonPropertyName("sourceId")]
+		public string SourceId { get; set; }
+
 		[JsonPropertyName("name")]
 		public string Name { get; set; }
+
+		[JsonPropertyName("sourceName")]
+		public string SourceName { get; set; }
+
+		[JsonPropertyName("sourceFormat")]
+		public string SourceFormat { get; set; }
+
+		[JsonPropertyName("sourcePath")]
+		public string SourcePath { get; set; }
+
+		[JsonPropertyName("sourceIndex")]
+		public int? SourceIndex { get; set; }
 
 		[JsonPropertyName("textureName")]
 		public string TextureName { get; set; }
@@ -53,6 +146,9 @@ namespace LR1Tools.Export
 		[JsonPropertyName("doubleSided")]
 		public bool DoubleSided { get; set; }
 
+		[JsonPropertyName("materialAnimationIds")]
+		public List<string> MaterialAnimationIds { get; set; }
+
 		[JsonPropertyName("gradients")]
 		public List<TrackGradientJsonDto> Gradients { get; set; }
 
@@ -62,8 +158,26 @@ namespace LR1Tools.Export
 
 	internal sealed class TrackMeshJsonDto
 	{
+		[JsonPropertyName("id")]
+		public string Id { get; set; }
+
+		[JsonPropertyName("sourceId")]
+		public string SourceId { get; set; }
+
 		[JsonPropertyName("name")]
 		public string Name { get; set; }
+
+		[JsonPropertyName("sourceName")]
+		public string SourceName { get; set; }
+
+		[JsonPropertyName("sourceFormat")]
+		public string SourceFormat { get; set; }
+
+		[JsonPropertyName("sourcePath")]
+		public string SourcePath { get; set; }
+
+		[JsonPropertyName("sourceIndex")]
+		public int? SourceIndex { get; set; }
 
 		[JsonPropertyName("materialName")]
 		public string MaterialName { get; set; }
@@ -101,8 +215,26 @@ namespace LR1Tools.Export
 
 	internal sealed class TrackObjectJsonDto
 	{
+		[JsonPropertyName("id")]
+		public string Id { get; set; }
+
+		[JsonPropertyName("sourceId")]
+		public string SourceId { get; set; }
+
 		[JsonPropertyName("name")]
 		public string Name { get; set; }
+
+		[JsonPropertyName("sourceName")]
+		public string SourceName { get; set; }
+
+		[JsonPropertyName("sourceFormat")]
+		public string SourceFormat { get; set; }
+
+		[JsonPropertyName("sourcePath")]
+		public string SourcePath { get; set; }
+
+		[JsonPropertyName("sourceIndex")]
+		public int? SourceIndex { get; set; }
 
 		[JsonPropertyName("meshName")]
 		public string MeshName { get; set; }
@@ -137,8 +269,26 @@ namespace LR1Tools.Export
 
 	internal sealed class TrackPathJsonDto
 	{
+		[JsonPropertyName("id")]
+		public string Id { get; set; }
+
+		[JsonPropertyName("sourceId")]
+		public string SourceId { get; set; }
+
 		[JsonPropertyName("name")]
 		public string Name { get; set; }
+
+		[JsonPropertyName("sourceName")]
+		public string SourceName { get; set; }
+
+		[JsonPropertyName("sourceFormat")]
+		public string SourceFormat { get; set; }
+
+		[JsonPropertyName("sourcePath")]
+		public string SourcePath { get; set; }
+
+		[JsonPropertyName("sourceIndex")]
+		public int? SourceIndex { get; set; }
 
 		[JsonPropertyName("closed")]
 		public bool Closed { get; set; }
@@ -170,8 +320,26 @@ namespace LR1Tools.Export
 
 	internal sealed class TrackGradientJsonDto
 	{
+		[JsonPropertyName("id")]
+		public string Id { get; set; }
+
+		[JsonPropertyName("sourceId")]
+		public string SourceId { get; set; }
+
 		[JsonPropertyName("name")]
 		public string Name { get; set; }
+
+		[JsonPropertyName("sourceName")]
+		public string SourceName { get; set; }
+
+		[JsonPropertyName("sourceFormat")]
+		public string SourceFormat { get; set; }
+
+		[JsonPropertyName("sourcePath")]
+		public string SourcePath { get; set; }
+
+		[JsonPropertyName("sourceIndex")]
+		public int? SourceIndex { get; set; }
 
 		[JsonPropertyName("stops")]
 		public List<TrackGradientStopJsonDto> Stops { get; set; }
@@ -187,6 +355,72 @@ namespace LR1Tools.Export
 
 		[JsonPropertyName("color")]
 		public float[] Color { get; set; }
+
+		[JsonPropertyName("metadata")]
+		public Dictionary<string, string> Metadata { get; set; }
+	}
+
+	internal sealed class TrackMaterialAnimationJsonDto
+	{
+		[JsonPropertyName("id")]
+		public string Id { get; set; }
+
+		[JsonPropertyName("sourceId")]
+		public string SourceId { get; set; }
+
+		[JsonPropertyName("name")]
+		public string Name { get; set; }
+
+		[JsonPropertyName("sourceName")]
+		public string SourceName { get; set; }
+
+		[JsonPropertyName("sourceFormat")]
+		public string SourceFormat { get; set; }
+
+		[JsonPropertyName("sourcePath")]
+		public string SourcePath { get; set; }
+
+		[JsonPropertyName("sourceIndex")]
+		public int? SourceIndex { get; set; }
+
+		[JsonPropertyName("materialName")]
+		public string MaterialName { get; set; }
+
+		[JsonPropertyName("behavior")]
+		public string Behavior { get; set; }
+
+		[JsonPropertyName("loopMode")]
+		public string LoopMode { get; set; }
+
+		[JsonPropertyName("frameCount")]
+		public int? FrameCount { get; set; }
+
+		[JsonPropertyName("speed")]
+		public float Speed { get; set; }
+
+		[JsonPropertyName("uvOffset")]
+		public float[] UvOffset { get; set; }
+
+		[JsonPropertyName("uvVelocity")]
+		public float[] UvVelocity { get; set; }
+
+		[JsonPropertyName("frames")]
+		public List<TrackMaterialAnimationFrameJsonDto> Frames { get; set; }
+
+		[JsonPropertyName("metadata")]
+		public Dictionary<string, string> Metadata { get; set; }
+	}
+
+	internal sealed class TrackMaterialAnimationFrameJsonDto
+	{
+		[JsonPropertyName("materialName")]
+		public string MaterialName { get; set; }
+
+		[JsonPropertyName("frameIndex")]
+		public int FrameIndex { get; set; }
+
+		[JsonPropertyName("uvOffset")]
+		public float[] UvOffset { get; set; }
 
 		[JsonPropertyName("metadata")]
 		public Dictionary<string, string> Metadata { get; set; }

@@ -1,8 +1,9 @@
 using System.Collections.Generic;
+using System.Numerics;
 
 namespace LR1Tools.Contracts
 {
-	public class TrackObject
+	public class TrackMaterialAnimation
 	{
 		public string Id { get; set; }
 		public string SourceId { get; set; }
@@ -11,14 +12,17 @@ namespace LR1Tools.Contracts
 		public string SourcePath { get; set; }
 		public int? SourceIndex { get; set; }
 		public string Name { get; set; }
-		public string MeshName { get; set; }
 		public string MaterialName { get; set; }
-		public string PathName { get; set; }
-		public bool Visible { get; set; }
-		public TrackTransform Transform { get; set; }
+		public string Behavior { get; set; }
+		public string LoopMode { get; set; }
+		public int? FrameCount { get; set; }
+		public float Speed { get; set; }
+		public Vector2 UvOffset { get; set; }
+		public Vector2 UvVelocity { get; set; }
+		public List<TrackMaterialAnimationFrame> Frames { get; private set; }
 		public Dictionary<string, string> Metadata { get; private set; }
 
-		public TrackObject()
+		public TrackMaterialAnimation()
 		{
 			Id = string.Empty;
 			SourceId = string.Empty;
@@ -27,13 +31,15 @@ namespace LR1Tools.Contracts
 			SourcePath = string.Empty;
 			SourceIndex = null;
 			Name = string.Empty;
-			MeshName = string.Empty;
 			MaterialName = string.Empty;
-			PathName = string.Empty;
-			Visible = true;
-			Transform = new TrackTransform();
+			Behavior = string.Empty;
+			LoopMode = string.Empty;
+			FrameCount = null;
+			Speed = 0f;
+			UvOffset = Vector2.Zero;
+			UvVelocity = Vector2.Zero;
+			Frames = new List<TrackMaterialAnimationFrame>();
 			Metadata = new Dictionary<string, string>();
 		}
 	}
 }
-

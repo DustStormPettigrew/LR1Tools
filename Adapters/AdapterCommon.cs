@@ -173,25 +173,32 @@ namespace LR1Tools.Adapters
 
 			if (LengthSquared(forward) < EPSILON)
 			{
-				forward = Vector3.UnitZ;
+				forward = Vector3.UnitX;
 			}
 
 			if (LengthSquared(up) < EPSILON)
 			{
-				up = Vector3.UnitY;
+				up = Vector3.UnitZ;
 			}
 
 			Vector3 right = Normalize(Vector3.Cross(up, forward));
 			if (LengthSquared(right) < EPSILON)
 			{
-				right = Vector3.UnitX;
+				right = Vector3.UnitY;
 			}
 
 			Vector3 orthoUp = Normalize(Vector3.Cross(forward, right));
+			if (LengthSquared(orthoUp) < EPSILON)
+			{
+				orthoUp = Vector3.UnitZ;
+			}
+
+			// Match LR1TrackEditor.CreateWorldMatrix:
+			// local +X = forward, local +Y = right, local +Z = up.
 			Matrix4x4 basis = new Matrix4x4(
+				forward.X, forward.Y, forward.Z, 0f,
 				right.X, right.Y, right.Z, 0f,
 				orthoUp.X, orthoUp.Y, orthoUp.Z, 0f,
-				forward.X, forward.Y, forward.Z, 0f,
 				0f, 0f, 0f, 1f
 			);
 			return Quaternion.Normalize(Quaternion.CreateFromRotationMatrix(basis));
@@ -221,6 +228,111 @@ namespace LR1Tools.Adapters
 			}
 
 			return output;
+		}
+
+		public static void SetSceneProvenance(TrackScene p_scene, string p_sourceFormat, string p_name, string p_sourceName = null, string p_sourceId = null, int? p_sourceIndex = null)
+		{
+			if (p_scene == null)
+			{
+				return;
+			}
+
+			p_scene.Id = !string.IsNullOrWhiteSpace(p_scene.Id) ? p_scene.Id : (p_name ?? string.Empty);
+			p_scene.SourceId = !string.IsNullOrWhiteSpace(p_scene.SourceId) ? p_scene.SourceId : (p_sourceId ?? p_scene.Id ?? string.Empty);
+			p_scene.SourceName = !string.IsNullOrWhiteSpace(p_scene.SourceName) ? p_scene.SourceName : (p_sourceName ?? p_name ?? string.Empty);
+			p_scene.SourceFormat = !string.IsNullOrWhiteSpace(p_scene.SourceFormat) ? p_scene.SourceFormat : (p_sourceFormat ?? string.Empty);
+			p_scene.SourceIndex = p_scene.SourceIndex.HasValue ? p_scene.SourceIndex : p_sourceIndex;
+			AddMetadata(p_scene.Metadata, "SourceFormat", p_scene.SourceFormat);
+		}
+
+		public static void SetMaterialProvenance(TrackMaterial p_material, string p_sourceFormat, string p_name, string p_sourceName = null, string p_sourceId = null, int? p_sourceIndex = null)
+		{
+			if (p_material == null)
+			{
+				return;
+			}
+
+			p_material.Id = !string.IsNullOrWhiteSpace(p_material.Id) ? p_material.Id : (p_name ?? string.Empty);
+			p_material.SourceId = !string.IsNullOrWhiteSpace(p_material.SourceId) ? p_material.SourceId : (p_sourceId ?? string.Empty);
+			p_material.SourceName = !string.IsNullOrWhiteSpace(p_material.SourceName) ? p_material.SourceName : (p_sourceName ?? p_name ?? string.Empty);
+			p_material.SourceFormat = !string.IsNullOrWhiteSpace(p_material.SourceFormat) ? p_material.SourceFormat : (p_sourceFormat ?? string.Empty);
+			p_material.SourceIndex = p_material.SourceIndex.HasValue ? p_material.SourceIndex : p_sourceIndex;
+			AddMetadata(p_material.Metadata, "SourceFormat", p_material.SourceFormat);
+		}
+
+		public static void SetMeshProvenance(TrackMesh p_mesh, string p_sourceFormat, string p_name, string p_sourceName = null, string p_sourceId = null, int? p_sourceIndex = null)
+		{
+			if (p_mesh == null)
+			{
+				return;
+			}
+
+			p_mesh.Id = !string.IsNullOrWhiteSpace(p_mesh.Id) ? p_mesh.Id : (p_name ?? string.Empty);
+			p_mesh.SourceId = !string.IsNullOrWhiteSpace(p_mesh.SourceId) ? p_mesh.SourceId : (p_sourceId ?? string.Empty);
+			p_mesh.SourceName = !string.IsNullOrWhiteSpace(p_mesh.SourceName) ? p_mesh.SourceName : (p_sourceName ?? p_name ?? string.Empty);
+			p_mesh.SourceFormat = !string.IsNullOrWhiteSpace(p_mesh.SourceFormat) ? p_mesh.SourceFormat : (p_sourceFormat ?? string.Empty);
+			p_mesh.SourceIndex = p_mesh.SourceIndex.HasValue ? p_mesh.SourceIndex : p_sourceIndex;
+			AddMetadata(p_mesh.Metadata, "SourceFormat", p_mesh.SourceFormat);
+		}
+
+		public static void SetObjectProvenance(TrackObject p_object, string p_sourceFormat, string p_name, string p_sourceName = null, string p_sourceId = null, int? p_sourceIndex = null)
+		{
+			if (p_object == null)
+			{
+				return;
+			}
+
+			p_object.Id = !string.IsNullOrWhiteSpace(p_object.Id) ? p_object.Id : (p_name ?? string.Empty);
+			p_object.SourceId = !string.IsNullOrWhiteSpace(p_object.SourceId) ? p_object.SourceId : (p_sourceId ?? string.Empty);
+			p_object.SourceName = !string.IsNullOrWhiteSpace(p_object.SourceName) ? p_object.SourceName : (p_sourceName ?? p_name ?? string.Empty);
+			p_object.SourceFormat = !string.IsNullOrWhiteSpace(p_object.SourceFormat) ? p_object.SourceFormat : (p_sourceFormat ?? string.Empty);
+			p_object.SourceIndex = p_object.SourceIndex.HasValue ? p_object.SourceIndex : p_sourceIndex;
+			AddMetadata(p_object.Metadata, "SourceFormat", p_object.SourceFormat);
+		}
+
+		public static void SetPathProvenance(TrackPath p_path, string p_sourceFormat, string p_name, string p_sourceName = null, string p_sourceId = null, int? p_sourceIndex = null)
+		{
+			if (p_path == null)
+			{
+				return;
+			}
+
+			p_path.Id = !string.IsNullOrWhiteSpace(p_path.Id) ? p_path.Id : (p_name ?? string.Empty);
+			p_path.SourceId = !string.IsNullOrWhiteSpace(p_path.SourceId) ? p_path.SourceId : (p_sourceId ?? string.Empty);
+			p_path.SourceName = !string.IsNullOrWhiteSpace(p_path.SourceName) ? p_path.SourceName : (p_sourceName ?? p_name ?? string.Empty);
+			p_path.SourceFormat = !string.IsNullOrWhiteSpace(p_path.SourceFormat) ? p_path.SourceFormat : (p_sourceFormat ?? string.Empty);
+			p_path.SourceIndex = p_path.SourceIndex.HasValue ? p_path.SourceIndex : p_sourceIndex;
+			AddMetadata(p_path.Metadata, "SourceFormat", p_path.SourceFormat);
+		}
+
+		public static void SetGradientProvenance(TrackGradient p_gradient, string p_sourceFormat, string p_name, string p_sourceName = null, string p_sourceId = null, int? p_sourceIndex = null)
+		{
+			if (p_gradient == null)
+			{
+				return;
+			}
+
+			p_gradient.Id = !string.IsNullOrWhiteSpace(p_gradient.Id) ? p_gradient.Id : (p_name ?? string.Empty);
+			p_gradient.SourceId = !string.IsNullOrWhiteSpace(p_gradient.SourceId) ? p_gradient.SourceId : (p_sourceId ?? string.Empty);
+			p_gradient.SourceName = !string.IsNullOrWhiteSpace(p_gradient.SourceName) ? p_gradient.SourceName : (p_sourceName ?? p_name ?? string.Empty);
+			p_gradient.SourceFormat = !string.IsNullOrWhiteSpace(p_gradient.SourceFormat) ? p_gradient.SourceFormat : (p_sourceFormat ?? string.Empty);
+			p_gradient.SourceIndex = p_gradient.SourceIndex.HasValue ? p_gradient.SourceIndex : p_sourceIndex;
+			AddMetadata(p_gradient.Metadata, "SourceFormat", p_gradient.SourceFormat);
+		}
+
+		public static void SetMaterialAnimationProvenance(TrackMaterialAnimation p_animation, string p_sourceFormat, string p_name, string p_sourceName = null, string p_sourceId = null, int? p_sourceIndex = null)
+		{
+			if (p_animation == null)
+			{
+				return;
+			}
+
+			p_animation.Id = !string.IsNullOrWhiteSpace(p_animation.Id) ? p_animation.Id : (p_name ?? string.Empty);
+			p_animation.SourceId = !string.IsNullOrWhiteSpace(p_animation.SourceId) ? p_animation.SourceId : (p_sourceId ?? string.Empty);
+			p_animation.SourceName = !string.IsNullOrWhiteSpace(p_animation.SourceName) ? p_animation.SourceName : (p_sourceName ?? p_name ?? string.Empty);
+			p_animation.SourceFormat = !string.IsNullOrWhiteSpace(p_animation.SourceFormat) ? p_animation.SourceFormat : (p_sourceFormat ?? string.Empty);
+			p_animation.SourceIndex = p_animation.SourceIndex.HasValue ? p_animation.SourceIndex : p_sourceIndex;
+			AddMetadata(p_animation.Metadata, "SourceFormat", p_animation.SourceFormat);
 		}
 
 		private static Vector3 Normalize(Vector3 p_value)

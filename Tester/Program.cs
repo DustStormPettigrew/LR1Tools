@@ -14,7 +14,7 @@ namespace LR1Tools.Tester
 
 			Console.WriteLine("Usage:");
 			Console.WriteLine("  export-json <input> <output.json>");
-			Console.WriteLine("  export-json <input1> <input2> <output.json>");
+			Console.WriteLine("  export-json <input1> <input2> ... <output.json>");
 		}
 	}
 }

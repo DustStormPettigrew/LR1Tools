@@ -11,8 +11,9 @@ namespace LR1Tools.Adapters
 		public static TrackScene ToScene(GDB p_source, string p_sceneName = null)
 		{
 			TrackScene scene = new TrackScene();
+			scene.ExportType = TrackSceneExportTypes.Mesh;
 			scene.Name = string.IsNullOrEmpty(p_sceneName) ? "GDBScene" : p_sceneName;
-			scene.SourceName = "GDB";
+			AdapterCommon.SetSceneProvenance(scene, "GDB", scene.Name);
 
 			if (p_source == null)
 			{
@@ -28,7 +29,7 @@ namespace LR1Tools.Adapters
 			{
 				TrackMaterial material = new TrackMaterial();
 				material.Name = materials[i] ?? string.Empty;
-				material.Metadata["SourceFormat"] = "GDB";
+				AdapterCommon.SetMaterialProvenance(material, "GDB", material.Name, material.Name, i.ToString(CultureInfo.InvariantCulture), i);
 				material.Metadata["MaterialIndex"] = i.ToString(CultureInfo.InvariantCulture);
 				scene.Materials.Add(material);
 			}
@@ -65,7 +66,7 @@ namespace LR1Tools.Adapters
 			mesh.Name = meshName;
 			mesh.MaterialName = ResolveMeshMaterialName(p_source.Materials, segments);
 			mesh.IsCollisionMesh = IsCollisionMeshName(meshName);
-			mesh.Metadata["SourceFormat"] = "GDB";
+			AdapterCommon.SetMeshProvenance(mesh, "GDB", mesh.Name, namePrefix, "0", 0);
 			mesh.Metadata["VertexEncoding"] = GetVertexEncoding(p_source);
 			mesh.Metadata["Scale"] = p_source.Scale.ToString("R", CultureInfo.InvariantCulture);
 			mesh.Metadata["SegmentCount"] = segments.Count.ToString(CultureInfo.InvariantCulture);
@@ -119,7 +120,7 @@ namespace LR1Tools.Adapters
 				obj.MeshName = p_meshes[i].Name;
 				obj.MaterialName = p_meshes[i].MaterialName;
 				obj.Transform.Scale = new Vector3(p_source.Scale, p_source.Scale, p_source.Scale);
-				obj.Metadata["SourceFormat"] = "GDB";
+				AdapterCommon.SetObjectProvenance(obj, "GDB", obj.Name, p_meshes[i].Name, i.ToString(CultureInfo.InvariantCulture), i);
 				obj.Metadata["MeshIndex"] = i.ToString(CultureInfo.InvariantCulture);
 				obj.Metadata["VertexEncoding"] = GetVertexEncoding(p_source);
 				output.Add(obj);

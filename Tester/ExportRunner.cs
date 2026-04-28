@@ -59,6 +59,7 @@ namespace LR1Tools.Tester
 			}
 
 			AddGdbMeshes(scene, p_selection.GdbPaths);
+			AddCollisionAssets(scene, p_selection);
 
 			if (!string.IsNullOrEmpty(p_selection.SkbPath))
 			{
@@ -122,6 +123,47 @@ namespace LR1Tools.Tester
 				MergeUniqueMaterials(p_target.Materials, gdbScene.Materials, materialNames);
 				MergeUniqueMeshes(p_target.Meshes, gdbScene.Meshes, meshNames);
 				CopyMetadata(p_target.Metadata, gdbScene.Metadata, "GDB." + i);
+			}
+		}
+
+		private static void AddCollisionAssets(TrackScene p_scene, SceneExportSelection p_selection)
+		{
+			if (p_scene == null || p_selection == null)
+			{
+				return;
+			}
+
+			for (int i = 0; i < p_selection.CollisionWdbPaths.Count; i++)
+			{
+				string collisionWdbPath = p_selection.CollisionWdbPaths[i];
+				TrackScene collisionScene = WDBAdapter.ToScene(LoadWdb(collisionWdbPath), Path.GetFileNameWithoutExtension(collisionWdbPath));
+				ApplySceneSource(collisionScene, collisionWdbPath, "WDB");
+				MarkObjectsAsCollision(collisionScene.Objects);
+				MergeScene(p_scene, collisionScene, false, false, true, false, false, "CollisionWDB." + i.ToString(CultureInfo.InvariantCulture));
+			}
+
+			HashSet<string> meshNames = CreateMeshNameSet(p_scene.Meshes);
+
+			for (int i = 0; i < p_selection.CollisionGdbPaths.Count; i++)
+			{
+				string collisionGdbPath = p_selection.CollisionGdbPaths[i];
+				TrackScene gdbScene = GDBAdapter.ToScene(new GDB(collisionGdbPath), Path.GetFileNameWithoutExtension(collisionGdbPath));
+				ApplySceneSource(gdbScene, collisionGdbPath, "GDB");
+				MarkMeshesAsCollision(gdbScene.Meshes);
+				MergeUniqueMeshes(p_scene.Meshes, gdbScene.Meshes, meshNames);
+				AddIdentityCollisionObjectsForUnreferencedMeshes(p_scene, gdbScene.Meshes, collisionGdbPath, "GDB");
+				CopyMetadata(p_scene.Metadata, gdbScene.Metadata, "CollisionGDB." + i.ToString(CultureInfo.InvariantCulture));
+			}
+
+			for (int i = 0; i < p_selection.CollisionBvbPaths.Count; i++)
+			{
+				string collisionBvbPath = p_selection.CollisionBvbPaths[i];
+				TrackScene bvbScene = BVBAdapter.ToScene(new BVB(collisionBvbPath), Path.GetFileNameWithoutExtension(collisionBvbPath));
+				ApplySceneSource(bvbScene, collisionBvbPath, "BVB");
+				MarkMeshesAsCollision(bvbScene.Meshes);
+				MergeUniqueMeshes(p_scene.Meshes, bvbScene.Meshes, meshNames);
+				AddIdentityCollisionObjectsForUnreferencedMeshes(p_scene, bvbScene.Meshes, collisionBvbPath, "BVB");
+				CopyMetadata(p_scene.Metadata, bvbScene.Metadata, "CollisionBVB." + i.ToString(CultureInfo.InvariantCulture));
 			}
 		}
 
@@ -634,6 +676,101 @@ namespace LR1Tools.Tester
 			}
 		}
 
+		private static void MarkMeshesAsCollision(IList<TrackMesh> p_meshes)
+		{
+			if (p_meshes == null)
+			{
+				return;
+			}
+
+			for (int i = 0; i < p_meshes.Count; i++)
+			{
+				TrackMesh mesh = p_meshes[i];
+				if (mesh == null)
+				{
+					continue;
+				}
+
+				mesh.IsCollisionMesh = true;
+				mesh.Metadata["IsCollisionMesh"] = "true";
+			}
+		}
+
+		private static void MarkObjectsAsCollision(IList<TrackObject> p_objects)
+		{
+			if (p_objects == null)
+			{
+				return;
+			}
+
+			for (int i = 0; i < p_objects.Count; i++)
+			{
+				TrackObject obj = p_objects[i];
+				if (obj == null)
+				{
+					continue;
+				}
+
+				obj.Metadata["IsCollisionObject"] = "true";
+			}
+		}
+
+		private static void AddIdentityCollisionObjectsForUnreferencedMeshes(
+			TrackScene p_scene,
+			IList<TrackMesh> p_meshes,
+			string p_sourcePath,
+			string p_sourceFormat)
+		{
+			if (p_scene == null || p_meshes == null)
+			{
+				return;
+			}
+
+			for (int i = 0; i < p_meshes.Count; i++)
+			{
+				TrackMesh mesh = p_meshes[i];
+				if (mesh == null || string.IsNullOrWhiteSpace(mesh.Name) || IsMeshReferencedByObject(p_scene.Objects, mesh.Name))
+				{
+					continue;
+				}
+
+				TrackObject obj = new TrackObject();
+				obj.Name = mesh.Name + ".CollisionObject";
+				obj.MeshName = mesh.Name;
+				obj.MaterialName = mesh.MaterialName ?? string.Empty;
+				obj.Metadata["IsCollisionObject"] = "true";
+				obj.Metadata["NativeType"] = "CollisionMesh";
+				ApplyObjectSource(obj, p_sourcePath, p_sourceFormat);
+				p_scene.Objects.Add(obj);
+			}
+		}
+
+		private static bool IsMeshReferencedByObject(IList<TrackObject> p_objects, string p_meshName)
+		{
+			if (p_objects == null || string.IsNullOrWhiteSpace(p_meshName))
+			{
+				return false;
+			}
+
+			string normalizedMeshName = NormalizeMeshReference(p_meshName);
+			for (int i = 0; i < p_objects.Count; i++)
+			{
+				TrackObject obj = p_objects[i];
+				if (obj == null || string.IsNullOrWhiteSpace(obj.MeshName))
+				{
+					continue;
+				}
+
+				if (string.Equals(obj.MeshName, p_meshName, StringComparison.OrdinalIgnoreCase) ||
+					string.Equals(NormalizeMeshReference(obj.MeshName), normalizedMeshName, StringComparison.OrdinalIgnoreCase))
+				{
+					return true;
+				}
+			}
+
+			return false;
+		}
+
 		private static HashSet<string> CreateMaterialNameSet(IList<TrackMaterial> p_items)
 		{
 			HashSet<string> names = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
@@ -719,6 +856,18 @@ namespace LR1Tools.Tester
 		private static string GetNameKey(string p_name)
 		{
 			return string.IsNullOrWhiteSpace(p_name) ? null : p_name.Trim();
+		}
+
+		private static string NormalizeMeshReference(string p_name)
+		{
+			if (string.IsNullOrWhiteSpace(p_name))
+			{
+				return string.Empty;
+			}
+
+			string fileName = Path.GetFileName(p_name.Trim());
+			string withoutExtension = Path.GetFileNameWithoutExtension(fileName);
+			return string.IsNullOrEmpty(withoutExtension) ? fileName.ToUpperInvariant() : withoutExtension.ToUpperInvariant();
 		}
 
 		private static bool IsDefaultColor(TrackColor p_color)
@@ -820,7 +969,7 @@ namespace LR1Tools.Tester
 				return TrackSceneExportTypes.ObjectSet;
 			}
 
-			bool hasMeshes = p_selection.GdbPaths.Count > 0;
+			bool hasMeshes = p_selection.GdbPaths.Count > 0 || p_selection.CollisionGdbPaths.Count > 0 || p_selection.CollisionBvbPaths.Count > 0;
 			bool hasPaths = p_selection.RrbPaths.Count > 0;
 			bool hasMaterials = !string.IsNullOrEmpty(p_selection.SkbPath) || p_selection.MabPaths.Count > 0 || p_selection.MdbPaths.Count > 0 || p_selection.TdbPaths.Count > 0;
 
@@ -889,6 +1038,8 @@ namespace LR1Tools.Tester
 			if (!string.IsNullOrEmpty(p_selection.RabPath)) return "RAB";
 			if (!string.IsNullOrEmpty(p_selection.WdbPath)) return "WDB";
 			if (p_selection.GdbPaths.Count > 0) return "GDB";
+			if (p_selection.CollisionBvbPaths.Count > 0) return "BVB";
+			if (p_selection.CollisionGdbPaths.Count > 0) return "GDB";
 			if (!string.IsNullOrEmpty(p_selection.SkbPath)) return "SKB";
 			if (p_selection.MabPaths.Count > 0) return "MAB";
 			if (!string.IsNullOrEmpty(p_selection.SpbPath)) return "SPB";
@@ -1123,6 +1274,34 @@ namespace LR1Tools.Tester
 			}
 		}
 
+		private static void ApplyObjectSource(TrackObject p_object, string p_sourcePath, string p_sourceFormat)
+		{
+			if (p_object == null)
+			{
+				return;
+			}
+
+			if (string.IsNullOrEmpty(p_object.Id))
+			{
+				p_object.Id = p_object.Name ?? string.Empty;
+			}
+
+			if (string.IsNullOrEmpty(p_object.SourceName))
+			{
+				p_object.SourceName = p_object.Name ?? string.Empty;
+			}
+
+			if (string.IsNullOrEmpty(p_object.SourceFormat))
+			{
+				p_object.SourceFormat = p_sourceFormat ?? string.Empty;
+			}
+
+			if (string.IsNullOrEmpty(p_object.SourcePath))
+			{
+				p_object.SourcePath = p_sourcePath ?? string.Empty;
+			}
+		}
+
 		private static void ApplyObjectsSource(IList<TrackObject> p_objects, string p_sourcePath, string p_sourceFormat)
 		{
 			if (p_objects == null)
@@ -1255,6 +1434,7 @@ namespace LR1Tools.Tester
 
 			ApplyRABReferences(selection);
 			ResolveWdbReferencedAssets(selection);
+			ResolveCollisionWdbReferencedAssets(selection);
 			ResolveNpcPathReferences(selection);
 			selection.SceneName = GetSceneName(selection);
 
@@ -1266,6 +1446,9 @@ namespace LR1Tools.Tester
 				string.IsNullOrEmpty(selection.HzbPath) &&
 				selection.MabPaths.Count == 0 &&
 				selection.GdbPaths.Count == 0 &&
+				selection.CollisionWdbPaths.Count == 0 &&
+				selection.CollisionGdbPaths.Count == 0 &&
+				selection.CollisionBvbPaths.Count == 0 &&
 				selection.MdbPaths.Count == 0 &&
 				selection.TdbPaths.Count == 0 &&
 				selection.PwbPaths.Count == 0 &&
@@ -1333,6 +1516,10 @@ namespace LR1Tools.Tester
 				else if (string.Equals(extension, ".WDB", StringComparison.OrdinalIgnoreCase))
 				{
 					p_selection.WdbPath = AssignSingleInput("WDB", resolved, p_selection.WdbPath);
+				}
+				else if (string.Equals(extension, ".BVB", StringComparison.OrdinalIgnoreCase))
+				{
+					AddUniquePath(p_selection.CollisionBvbPaths, resolved);
 				}
 				else if (string.Equals(extension, ".SKB", StringComparison.OrdinalIgnoreCase))
 				{
@@ -1440,6 +1627,7 @@ namespace LR1Tools.Tester
 			}
 
 			string checkpointReference = GetArrayValue(track.CheckpointFiles, 0);
+			string checkpointCollisionReference = GetArrayValue(track.CheckpointFiles, 1);
 			string powerupLayoutReference = GetArrayValue(track.PowerupFiles, 0);
 			string powerupMaterialAnimation = GetArrayValue(track.PowerupFiles, 1);
 			string auxiliaryPowerupScene = GetArrayValue(track.PowerupFiles, 2);
@@ -1449,6 +1637,7 @@ namespace LR1Tools.Tester
 			ResolveReferencedSingleAsset(p_selection, "RAB.StartPos", track.StartPosFile, new[] { ".SPB" }, p_selection.SpbPath, value => p_selection.SpbPath = value);
 			ResolveReferencedSingleAsset(p_selection, "RAB.Hazard", track.HazardFile, new[] { ".HZB" }, p_selection.HzbPath, value => p_selection.HzbPath = value);
 			ResolveReferencedSingleAsset(p_selection, "RAB.Checkpoints", checkpointReference, new[] { ".CPB" }, p_selection.CpbPath, value => p_selection.CpbPath = value);
+			ResolveCollisionReference(p_selection, "RAB.CheckpointCollision", checkpointCollisionReference);
 			ResolveReferencedListAsset(p_selection, "RAB.PowerupLayout", powerupLayoutReference, new[] { ".PWB" }, p_selection.PwbPaths);
 
 			ResolveReferencedListAsset(p_selection, "RAB.PowerupMaterialAnimation", powerupMaterialAnimation, new[] { ".MAB" }, p_selection.MabPaths);
@@ -1473,7 +1662,7 @@ namespace LR1Tools.Tester
 					string reference = track.MaybeCollisionMeshes[i];
 					if (!string.IsNullOrWhiteSpace(reference))
 					{
-						AddSkippedAsset(p_selection, "RAB.Collision[" + i + "]", reference + " (collision-only asset not mapped into scene contracts)");
+						ResolveCollisionReference(p_selection, "RAB.Collision[" + i + "]", reference);
 					}
 				}
 			}
@@ -1509,9 +1698,11 @@ namespace LR1Tools.Tester
 
 			ResolveReferencedGdbPaths(p_selection, wdbDirectory, GetReferencedNames(wdb.GDBs), "WDB.GDB");
 			ResolveReferencedGdbPaths(p_selection, wdbDirectory, GetReferencedNames(wdb.GDB2s), "WDB.GDB2");
+			ResolveReferencedCollisionPaths(p_selection, wdbDirectory, GetReferencedNames(wdb.BVBs), new[] { ".BVB" }, p_selection.CollisionBvbPaths, "WDB.BVB");
 			ResolveReferencedListAssets(p_selection, "WDB.MAB", GetReferencedNames(wdb.MABs), new[] { ".MAB" }, p_selection.MabPaths);
 			ResolveReferencedListAssets(p_selection, "WDB.MDB", GetReferencedNames(wdb.MDBs), new[] { ".MDB" }, p_selection.MdbPaths);
 			ResolveReferencedListAssets(p_selection, "WDB.TDB", GetReferencedNames(wdb.TDBs), new[] { ".TDB" }, p_selection.TdbPaths);
+			ResolveCollisionWdbReferencedAssets(p_selection);
 		}
 
 		private static void ResolveNpcPathReferences(SceneExportSelection p_selection)
@@ -1649,6 +1840,104 @@ namespace LR1Tools.Tester
 			AddSkippedAsset(p_selection, p_label, p_reference);
 		}
 
+		private static void ResolveCollisionReference(SceneExportSelection p_selection, string p_label, string p_reference)
+		{
+			if (string.IsNullOrWhiteSpace(p_reference))
+			{
+				return;
+			}
+
+			if (!p_selection.AutoResolveReferencedAssets)
+			{
+				AddSkippedAsset(p_selection, p_label, p_reference + " (auto-resolution disabled)");
+				return;
+			}
+
+			string primaryDirectory = GetPrimaryDirectory(p_selection);
+			string resolved = ResolveAliasedAsset(p_selection, primaryDirectory, p_reference, new[] { ".WDB", ".WDF" });
+			if (!string.IsNullOrEmpty(resolved))
+			{
+				AddUniquePath(p_selection.CollisionWdbPaths, resolved);
+				AddResolvedAsset(p_selection, p_label, p_reference, resolved);
+				return;
+			}
+
+			resolved = ResolveAliasedAsset(p_selection, primaryDirectory, p_reference, new[] { ".BVB" });
+			if (!string.IsNullOrEmpty(resolved))
+			{
+				AddUniquePath(p_selection.CollisionBvbPaths, resolved);
+				AddResolvedAsset(p_selection, p_label, p_reference, resolved);
+				return;
+			}
+
+			resolved = ResolveAliasedAsset(p_selection, primaryDirectory, p_reference, new[] { ".GDB" });
+			if (!string.IsNullOrEmpty(resolved))
+			{
+				AddUniquePath(p_selection.CollisionGdbPaths, resolved);
+				AddResolvedAsset(p_selection, p_label, p_reference, resolved);
+				return;
+			}
+
+			AddSkippedAsset(p_selection, p_label, p_reference);
+		}
+
+		private static void ResolveCollisionWdbReferencedAssets(SceneExportSelection p_selection)
+		{
+			if (p_selection == null || p_selection.CollisionWdbPaths.Count == 0)
+			{
+				return;
+			}
+
+			for (int i = 0; i < p_selection.CollisionWdbPaths.Count; i++)
+			{
+				string collisionWdbPath = p_selection.CollisionWdbPaths[i];
+				if (string.IsNullOrEmpty(collisionWdbPath) || !File.Exists(collisionWdbPath))
+				{
+					continue;
+				}
+
+				WDB collisionWdb = LoadWdb(collisionWdbPath);
+				string collisionDirectory = Path.GetDirectoryName(collisionWdbPath);
+				ResolveReferencedCollisionPaths(p_selection, collisionDirectory, GetReferencedNames(collisionWdb.GDBs), new[] { ".GDB" }, p_selection.CollisionGdbPaths, "CollisionWDB.GDB");
+				ResolveReferencedCollisionPaths(p_selection, collisionDirectory, GetReferencedNames(collisionWdb.BVBs), new[] { ".BVB" }, p_selection.CollisionBvbPaths, "CollisionWDB.BVB");
+			}
+		}
+
+		private static void ResolveReferencedCollisionPaths(
+			SceneExportSelection p_selection,
+			string p_primaryDirectory,
+			IList<string> p_references,
+			string[] p_extensions,
+			List<string> p_target,
+			string p_labelPrefix)
+		{
+			if (p_references == null)
+			{
+				return;
+			}
+
+			for (int i = 0; i < p_references.Count; i++)
+			{
+				string reference = p_references[i];
+				if (string.IsNullOrWhiteSpace(reference) || ContainsResolvedReference(p_target, reference))
+				{
+					continue;
+				}
+
+				string label = p_labelPrefix + "[" + i.ToString(CultureInfo.InvariantCulture) + "]";
+				string resolved = ResolveAliasedAsset(p_selection, p_primaryDirectory, reference, p_extensions);
+				if (!string.IsNullOrEmpty(resolved))
+				{
+					AddUniquePath(p_target, resolved);
+					AddResolvedAsset(p_selection, label, reference, resolved);
+				}
+				else
+				{
+					AddSkippedAsset(p_selection, label, reference);
+				}
+			}
+		}
+
 		private static string ResolveOutputPath(string p_selectionOutputPath, string p_sceneName)
 		{
 			if (!string.IsNullOrEmpty(p_selectionOutputPath))
@@ -1720,6 +2009,8 @@ namespace LR1Tools.Tester
 			if (!string.IsNullOrEmpty(p_selection.RabPath)) return p_selection.RabPath;
 			if (!string.IsNullOrEmpty(p_selection.WdbPath)) return p_selection.WdbPath;
 			if (p_selection.GdbPaths.Count > 0) return p_selection.GdbPaths[0];
+			if (p_selection.CollisionBvbPaths.Count > 0) return p_selection.CollisionBvbPaths[0];
+			if (p_selection.CollisionGdbPaths.Count > 0) return p_selection.CollisionGdbPaths[0];
 			if (!string.IsNullOrEmpty(p_selection.SkbPath)) return p_selection.SkbPath;
 			if (p_selection.MabPaths.Count > 0) return p_selection.MabPaths[0];
 			if (!string.IsNullOrEmpty(p_selection.SpbPath)) return p_selection.SpbPath;
@@ -1742,6 +2033,9 @@ namespace LR1Tools.Tester
 			AddMetadataValue(p_scene.Metadata, "Export.Input.Primary", p_selection.PrimaryInputPath);
 			AddMetadataValue(p_scene.Metadata, "Export.Input.RAB", p_selection.RabPath);
 			AddMetadataValue(p_scene.Metadata, "Export.Input.WDB", p_selection.WdbPath);
+			AddMetadataArray(p_scene.Metadata, "Export.Input.CollisionWDB", p_selection.CollisionWdbPaths);
+			AddMetadataArray(p_scene.Metadata, "Export.Input.CollisionGDB", p_selection.CollisionGdbPaths);
+			AddMetadataArray(p_scene.Metadata, "Export.Input.CollisionBVB", p_selection.CollisionBvbPaths);
 			AddMetadataValue(p_scene.Metadata, "Export.Input.SKB", p_selection.SkbPath);
 			AddMetadataArray(p_scene.Metadata, "Export.Input.MAB", p_selection.MabPaths);
 			AddMetadataValue(p_scene.Metadata, "Export.Input.SPB", p_selection.SpbPath);
@@ -1766,6 +2060,9 @@ namespace LR1Tools.Tester
 			Console.WriteLine("Selected export files:");
 			Console.WriteLine("RAB: " + (!string.IsNullOrEmpty(p_selection.RabPath) ? p_selection.RabPath : "<none>"));
 			Console.WriteLine("WDB: " + (!string.IsNullOrEmpty(p_selection.WdbPath) ? p_selection.WdbPath : "<none>"));
+			LogPathList("Collision WDB(s)", p_selection.CollisionWdbPaths);
+			LogPathList("Collision GDB(s)", p_selection.CollisionGdbPaths);
+			LogPathList("Collision BVB(s)", p_selection.CollisionBvbPaths);
 			LogPathList("Explicit GDB(s)", p_selection.ExplicitGdbPaths);
 			LogPathList("Auto-resolved GDB(s)", p_selection.AutoResolvedGdbPaths);
 			LogPathList("Unresolved GDB reference(s)", p_selection.UnresolvedGdbReferences);
@@ -1985,9 +2282,48 @@ namespace LR1Tools.Tester
 						AddUniqueName(candidates, stem + p_extensions[i]);
 					}
 				}
+
+				foreach (string aliasStem in GetAssetStemAliases(stem))
+				{
+					for (int i = 0; i < p_extensions.Length; i++)
+					{
+						if (!string.IsNullOrEmpty(p_extensions[i]))
+						{
+							AddUniqueName(candidates, aliasStem + p_extensions[i]);
+						}
+					}
+				}
 			}
 
 			return candidates;
+		}
+
+		private static IEnumerable<string> GetAssetStemAliases(string p_stem)
+		{
+			if (string.IsNullOrWhiteSpace(p_stem))
+			{
+				yield break;
+			}
+
+			if (string.Equals(p_stem, "strtlne", StringComparison.OrdinalIgnoreCase))
+			{
+				yield return "startfin";
+				yield return "starfin";
+				yield break;
+			}
+
+			if (string.Equals(p_stem, "startfin", StringComparison.OrdinalIgnoreCase))
+			{
+				yield return "strtlne";
+				yield return "starfin";
+				yield break;
+			}
+
+			if (string.Equals(p_stem, "starfin", StringComparison.OrdinalIgnoreCase))
+			{
+				yield return "startfin";
+				yield return "strtlne";
+			}
 		}
 
 		private static IList<string> GetReferencedNames(string[] p_values)
@@ -2230,6 +2566,9 @@ namespace LR1Tools.Tester
 			public List<string> ExplicitGdbPaths { get; private set; }
 			public List<string> AutoResolvedGdbPaths { get; private set; }
 			public List<string> UnresolvedGdbReferences { get; private set; }
+			public List<string> CollisionWdbPaths { get; private set; }
+			public List<string> CollisionGdbPaths { get; private set; }
+			public List<string> CollisionBvbPaths { get; private set; }
 			public string SkbPath { get; set; }
 			public List<string> MabPaths { get; private set; }
 			public string SpbPath { get; set; }
@@ -2251,6 +2590,9 @@ namespace LR1Tools.Tester
 				ExplicitGdbPaths = new List<string>();
 				AutoResolvedGdbPaths = new List<string>();
 				UnresolvedGdbReferences = new List<string>();
+				CollisionWdbPaths = new List<string>();
+				CollisionGdbPaths = new List<string>();
+				CollisionBvbPaths = new List<string>();
 				MabPaths = new List<string>();
 				PwbPaths = new List<string>();
 				EmbPaths = new List<string>();

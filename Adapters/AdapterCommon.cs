@@ -335,6 +335,79 @@ namespace LR1Tools.Adapters
 			AddMetadata(p_animation.Metadata, "SourceFormat", p_animation.SourceFormat);
 		}
 
+		public static void SetAnimationPackageProvenance(TrackAnimationPackage p_package, string p_sourceFormat, string p_name, string p_sourceName = null, string p_sourceId = null, int? p_sourceIndex = null)
+		{
+			if (p_package == null)
+			{
+				return;
+			}
+
+			p_package.Id = !string.IsNullOrWhiteSpace(p_package.Id) ? p_package.Id : (p_name ?? string.Empty);
+			p_package.SourceId = !string.IsNullOrWhiteSpace(p_package.SourceId) ? p_package.SourceId : (p_sourceId ?? p_package.Id ?? string.Empty);
+			p_package.SourceName = !string.IsNullOrWhiteSpace(p_package.SourceName) ? p_package.SourceName : (p_sourceName ?? p_name ?? string.Empty);
+			p_package.SourceFormat = !string.IsNullOrWhiteSpace(p_package.SourceFormat) ? p_package.SourceFormat : (p_sourceFormat ?? string.Empty);
+			p_package.SourceIndex = p_package.SourceIndex.HasValue ? p_package.SourceIndex : p_sourceIndex;
+			AddMetadata(p_package.Metadata, "SourceFormat", p_package.SourceFormat);
+		}
+
+		public static void SetAnimationClipProvenance(TrackAnimationClip p_clip, string p_sourceFormat, string p_name, string p_sourceName = null, string p_sourceId = null, int? p_sourceIndex = null)
+		{
+			if (p_clip == null)
+			{
+				return;
+			}
+
+			p_clip.Id = !string.IsNullOrWhiteSpace(p_clip.Id) ? p_clip.Id : (p_name ?? string.Empty);
+			p_clip.SourceId = !string.IsNullOrWhiteSpace(p_clip.SourceId) ? p_clip.SourceId : (p_sourceId ?? string.Empty);
+			p_clip.SourceName = !string.IsNullOrWhiteSpace(p_clip.SourceName) ? p_clip.SourceName : (p_sourceName ?? p_name ?? string.Empty);
+			p_clip.SourceFormat = !string.IsNullOrWhiteSpace(p_clip.SourceFormat) ? p_clip.SourceFormat : (p_sourceFormat ?? string.Empty);
+			p_clip.SourceIndex = p_clip.SourceIndex.HasValue ? p_clip.SourceIndex : p_sourceIndex;
+			AddMetadata(p_clip.Metadata, "SourceFormat", p_clip.SourceFormat);
+		}
+
+		public static void SetAnimationChannelProvenance(TrackAnimationChannel p_channel, string p_sourceFormat, string p_name, string p_sourceName = null, string p_sourceId = null, int? p_sourceIndex = null)
+		{
+			if (p_channel == null)
+			{
+				return;
+			}
+
+			p_channel.Id = !string.IsNullOrWhiteSpace(p_channel.Id) ? p_channel.Id : (p_name ?? string.Empty);
+			p_channel.SourceId = !string.IsNullOrWhiteSpace(p_channel.SourceId) ? p_channel.SourceId : (p_sourceId ?? string.Empty);
+			p_channel.SourceName = !string.IsNullOrWhiteSpace(p_channel.SourceName) ? p_channel.SourceName : (p_sourceName ?? p_name ?? string.Empty);
+			p_channel.SourceFormat = !string.IsNullOrWhiteSpace(p_channel.SourceFormat) ? p_channel.SourceFormat : (p_sourceFormat ?? string.Empty);
+			p_channel.SourceIndex = p_channel.SourceIndex.HasValue ? p_channel.SourceIndex : p_sourceIndex;
+			AddMetadata(p_channel.Metadata, "SourceFormat", p_channel.SourceFormat);
+		}
+
+		public static void SetAnimationTargetProvenance(TrackAnimationTarget p_target, string p_sourceFormat, string p_name, string p_sourceName = null, string p_sourceId = null, int? p_sourceIndex = null)
+		{
+			if (p_target == null)
+			{
+				return;
+			}
+
+			p_target.Id = !string.IsNullOrWhiteSpace(p_target.Id) ? p_target.Id : (p_name ?? string.Empty);
+			p_target.SourceId = !string.IsNullOrWhiteSpace(p_target.SourceId) ? p_target.SourceId : (p_sourceId ?? string.Empty);
+			p_target.SourceName = !string.IsNullOrWhiteSpace(p_target.SourceName) ? p_target.SourceName : (p_sourceName ?? p_name ?? string.Empty);
+			p_target.SourceFormat = !string.IsNullOrWhiteSpace(p_target.SourceFormat) ? p_target.SourceFormat : (p_sourceFormat ?? string.Empty);
+			p_target.SourceIndex = p_target.SourceIndex.HasValue ? p_target.SourceIndex : p_sourceIndex;
+			AddMetadata(p_target.Metadata, "SourceFormat", p_target.SourceFormat);
+		}
+
+		public static void SetAnimationKeyframeProvenance(TrackAnimationKeyframe p_keyframe, string p_sourceFormat, string p_sourceName = null, int? p_sourceIndex = null)
+		{
+			if (p_keyframe == null)
+			{
+				return;
+			}
+
+			p_keyframe.SourceName = !string.IsNullOrWhiteSpace(p_keyframe.SourceName) ? p_keyframe.SourceName : (p_sourceName ?? string.Empty);
+			p_keyframe.SourceFormat = !string.IsNullOrWhiteSpace(p_keyframe.SourceFormat) ? p_keyframe.SourceFormat : (p_sourceFormat ?? string.Empty);
+			p_keyframe.SourceIndex = p_keyframe.SourceIndex.HasValue ? p_keyframe.SourceIndex : p_sourceIndex;
+			AddMetadata(p_keyframe.Metadata, "SourceFormat", p_keyframe.SourceFormat);
+		}
+
 		private static Vector3 Normalize(Vector3 p_value)
 		{
 			float length = p_value.Length();

@@ -15,6 +15,7 @@ namespace LR1Tools.Contracts
 		public TrackCoordinateSystem CoordinateSystem { get; set; }
 		public List<TrackMesh> Meshes { get; private set; }
 		public List<TrackMaterial> Materials { get; private set; }
+		public List<TrackTexture> Textures { get; private set; }
 		public List<TrackObject> Objects { get; private set; }
 		public List<TrackObject> StartPositions { get; private set; }
 		public List<TrackObject> Checkpoints { get; private set; }
@@ -40,6 +41,7 @@ namespace LR1Tools.Contracts
 			CoordinateSystem = new TrackCoordinateSystem();
 			Meshes = new List<TrackMesh>();
 			Materials = new List<TrackMaterial>();
+			Textures = new List<TrackTexture>();
 			Objects = new List<TrackObject>();
 			StartPositions = new List<TrackObject>();
 			Checkpoints = new List<TrackObject>();

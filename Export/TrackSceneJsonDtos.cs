@@ -56,6 +56,9 @@ namespace LR1Tools.Export
 		[JsonPropertyName("materials")]
 		public List<TrackMaterialJsonDto> Materials { get; set; }
 
+		[JsonPropertyName("textures")]
+		public List<TrackTextureJsonDto> Textures { get; set; }
+
 		[JsonPropertyName("materialAnimations")]
 		public List<TrackMaterialAnimationJsonDto> MaterialAnimations { get; set; }
 
@@ -136,6 +139,12 @@ namespace LR1Tools.Export
 
 		[JsonPropertyName("alphaTextureName")]
 		public string AlphaTextureName { get; set; }
+
+		[JsonPropertyName("textureRef")]
+		public TrackTextureReferenceJsonDto TextureRef { get; set; }
+
+		[JsonPropertyName("alphaTextureRef")]
+		public TrackTextureReferenceJsonDto AlphaTextureRef { get; set; }
 
 		[JsonPropertyName("diffuseColor")]
 		public float[] DiffuseColor { get; set; }
@@ -244,6 +253,18 @@ namespace LR1Tools.Export
 
 		[JsonPropertyName("pathName")]
 		public string PathName { get; set; }
+
+		[JsonPropertyName("animationRef")]
+		public string AnimationRef { get; set; }
+
+		[JsonPropertyName("materialAnimationRef")]
+		public string MaterialAnimationRef { get; set; }
+
+		[JsonPropertyName("animationSourceName")]
+		public string AnimationSourceName { get; set; }
+
+		[JsonPropertyName("animationSourcePath")]
+		public string AnimationSourcePath { get; set; }
 
 		[JsonPropertyName("visible")]
 		public bool Visible { get; set; }
@@ -355,6 +376,57 @@ namespace LR1Tools.Export
 
 		[JsonPropertyName("color")]
 		public float[] Color { get; set; }
+
+		[JsonPropertyName("metadata")]
+		public Dictionary<string, string> Metadata { get; set; }
+	}
+
+	internal sealed class TrackTextureJsonDto
+	{
+		[JsonPropertyName("id")]
+		public string Id { get; set; }
+
+		[JsonPropertyName("name")]
+		public string Name { get; set; }
+
+		[JsonPropertyName("sourcePath")]
+		public string SourcePath { get; set; }
+
+		[JsonPropertyName("exportPath")]
+		public string ExportPath { get; set; }
+
+		[JsonPropertyName("width")]
+		public int Width { get; set; }
+
+		[JsonPropertyName("height")]
+		public int Height { get; set; }
+
+		[JsonPropertyName("format")]
+		public string Format { get; set; }
+
+		[JsonPropertyName("hasAlpha")]
+		public bool? HasAlpha { get; set; }
+
+		[JsonPropertyName("paletteColorCount")]
+		public int? PaletteColorCount { get; set; }
+
+		[JsonPropertyName("metadata")]
+		public Dictionary<string, string> Metadata { get; set; }
+	}
+
+	internal sealed class TrackTextureReferenceJsonDto
+	{
+		[JsonPropertyName("textureId")]
+		public string TextureId { get; set; }
+
+		[JsonPropertyName("name")]
+		public string Name { get; set; }
+
+		[JsonPropertyName("sourcePath")]
+		public string SourcePath { get; set; }
+
+		[JsonPropertyName("exportPath")]
+		public string ExportPath { get; set; }
 
 		[JsonPropertyName("metadata")]
 		public Dictionary<string, string> Metadata { get; set; }

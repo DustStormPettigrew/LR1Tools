@@ -2,16 +2,13 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net8.0</TargetFramework>
-    <AssemblyName>LR1Tools.Tester</AssemblyName>
-    <RootNamespace>LR1Tools.Tester</RootNamespace>
-    <LangVersion>latest</LangVersion>
-    <Nullable>disable</Nullable>
+    <AssemblyName>LR1Tools.BrickManifest</AssemblyName>
+    <RootNamespace>LR1Tools.BrickManifest</RootNamespace>
     <ImplicitUsings>disable</ImplicitUsings>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <Nullable>disable</Nullable>
   </PropertyGroup>
-
   <ItemGroup>
-    <ProjectReference Include="..\LR1Tools.csproj" />
     <ProjectReference Include="..\..\LibLR1\LibLR1.csproj" />
+    <PackageReference Include="YamlDotNet" Version="16.3.0" />
   </ItemGroup>
 </Project>

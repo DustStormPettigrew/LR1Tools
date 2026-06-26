@@ -13,6 +13,8 @@ namespace LR1Tools.Contracts
 		public string Name { get; set; }
 		public string TextureName { get; set; }
 		public string AlphaTextureName { get; set; }
+		public TrackTextureReference TextureRef { get; set; }
+		public TrackTextureReference AlphaTextureRef { get; set; }
 		public TrackColor DiffuseColor { get; set; }
 		public float Opacity { get; set; }
 		public bool DoubleSided { get; set; }
@@ -31,6 +33,8 @@ namespace LR1Tools.Contracts
 			Name = string.Empty;
 			TextureName = string.Empty;
 			AlphaTextureName = string.Empty;
+			TextureRef = null;
+			AlphaTextureRef = null;
 			DiffuseColor = new TrackColor(1f, 1f, 1f, 1f);
 			Opacity = 1f;
 			DoubleSided = false;

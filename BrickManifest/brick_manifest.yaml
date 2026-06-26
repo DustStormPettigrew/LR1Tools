@@ -1,0 +1,2229 @@
+version: 1
+generated_at: 2026-06-22T03:15:20.2779353Z
+color_palette:
+- index: 0
+  name: black
+  display: Black
+  hex: '#1B2A34'
+- index: 1
+  name: white
+  display: White
+  hex: '#F4F4F4'
+- index: 2
+  name: biege
+  display: Beige
+  hex: '#D6BB80'
+- index: 3
+  name: ltgray
+  display: Ltgray
+  hex: '#B6B8BA'
+- index: 4
+  name: dkgray
+  display: Dkgray
+  hex: '#555A5C'
+- index: 5
+  name: red
+  display: Red
+  hex: '#C62828'
+- index: 6
+  name: brown
+  display: Brown
+  hex: '#795548'
+- index: 7
+  name: yellow
+  display: Yellow
+  hex: '#FDD835'
+- index: 8
+  name: green
+  display: Green
+  hex: '#2E7D32'
+- index: 9
+  name: blue
+  display: Blue
+  hex: '#1565C0'
+token_categories:
+- token: 0x00
+  name: chassis
+  description: Chassis component, not a placeable brick
+- token: 0x08
+  name: primitive
+  description: Built-in primitive (Cylinder)
+- token: 0x13
+  name: regular
+  description: Standard regular brick
+- token: 0x14
+  name: compound
+  description: Compound or decorated piece (often paired)
+sets:
+- set_tag: 0x0B
+  cset_file: dp_cset.leg
+  chassis: ddchas0
+  display_name: Default Set 1
+  player_accessible: true
+- set_tag: 0x0C
+  cset_file: da_cset.leg
+  chassis: dbchas0
+  display_name: Default Set 2
+  player_accessible: true
+- set_tag: 0x0D
+  cset_file: ds_cset.leg
+  chassis: dcchas0
+  display_name: Default Set 3
+  player_accessible: true
+- set_tag: 0x0E
+  cset_file: dc_cset.leg
+  chassis: dachas0
+  display_name: Default Set 4
+  player_accessible: true
+- set_tag: 0x0F
+  cset_file: cr_cset.leg
+  chassis: crchas0
+  display_name: Captain Redbeard
+  player_accessible: true
+- set_tag: 0x10
+  cset_file: kk_cset.leg
+  chassis: kkchas0
+  display_name: King Kahuka
+  player_accessible: true
+- set_tag: 0x11
+  cset_file: bb_cset.leg
+  chassis: bbchas0
+  display_name: Basil the Bat
+  player_accessible: true
+- set_tag: 0x12
+  cset_file: jt_cset.leg
+  chassis: jtchas0
+  display_name: Johnny Thunder
+  player_accessible: true
+- set_tag: 0x13
+  cset_file: bvb_cset.leg
+  chassis: bvbcha0
+  display_name: Baron Von Barron
+  player_accessible: true
+- set_tag: 0x14
+  cset_file: gm_cset.leg
+  chassis: gm_chas0
+  display_name: Gypsy Moth
+  player_accessible: true
+- set_tag: 0x15
+  cset_file: rr_cset.leg
+  chassis: rrchas0
+  display_name: Rocket Racer
+  player_accessible: true
+- set_tag: 0x16
+  cset_file: vv_cset.leg
+  chassis: vvchas0
+  display_name: Veronica Voltage
+  player_accessible: true
+- chassis: achas0
+  display_name: Achas0
+  player_accessible: false
+- chassis: apchas0
+  display_name: Apchas0
+  player_accessible: false
+- chassis: bhchas0
+  display_name: Bhchas0
+  player_accessible: false
+- chassis: bkchas0
+  display_name: Bkchas0
+  player_accessible: false
+- chassis: ccchas0
+  display_name: Ccchas0
+  player_accessible: false
+- chassis: gbchas0
+  display_name: Gbchas0
+  player_accessible: false
+- chassis: nhchas0
+  display_name: Nhchas0
+  player_accessible: false
+- chassis: phchas0
+  display_name: Phchas0
+  player_accessible: false
+- chassis: rhchas0
+  display_name: Rhchas0
+  player_accessible: false
+- chassis: rkchas0
+  display_name: Rkchas0
+  player_accessible: false
+- chassis: sbchas0
+  display_name: Sbchas0
+  player_accessible: false
+- chassis: tcchas0
+  display_name: Tcchas0
+  player_accessible: false
+pieces:
+- piece_name: l239901
+  display_name: L239901
+  token: 0x13
+  brick_id: 0xEF
+  vertex_count: 283
+  face_count: 16
+  sets:
+  - set_tag: 0x0C
+    valid_colors:
+    - red
+    - yellow
+    - blue
+  - set_tag: 0x0D
+    valid_colors:
+    - white
+  - set_tag: 0x0E
+    valid_colors:
+    - black
+  - set_tag: 0x10
+    valid_colors:
+    - ltgray
+  single_color_lock: false
+  category: basic_brick
+  notes: ''
+- piece_name: l239902
+  display_name: L239902
+  token: 0x13
+  brick_id: 0xF0
+  vertex_count: 288
+  face_count: 16
+  sets:
+  - set_tag: 0x0C
+    valid_colors:
+    - red
+    - yellow
+    - blue
+  - set_tag: 0x0D
+    valid_colors:
+    - white
+  - set_tag: 0x0E
+    valid_colors:
+    - black
+  - set_tag: 0x10
+    valid_colors:
+    - ltgray
+  single_color_lock: false
+  category: basic_brick
+  notes: ''
+- piece_name: l241900
+  display_name: L241900
+  token: 0x13
+  brick_id: 0x89
+  vertex_count: 2
+  face_count: 80
+  sets:
+  - set_tag: 0x0D
+    valid_colors:
+    - black
+  - set_tag: 0x14
+    valid_colors:
+    - blue
+  single_color_lock: true
+  category: basic_brick
+  notes: ''
+- piece_name: l248900
+  display_name: L248900
+  token: 0x13
+  brick_id: 0x8B
+  vertex_count: 21
+  face_count: 60
+  sets:
+  - set_tag: 0x0F
+    valid_colors:
+    - brown
+  single_color_lock: true
+  category: basic_brick
+  notes: ''
+- piece_name: l287700
+  display_name: L287700
+  token: 0x13
+  brick_id: 0x8C
+  vertex_count: 26
+  face_count: 12
+  sets:
+  - set_tag: 0x16
+    valid_colors:
+    - white
+  single_color_lock: true
+  category: basic_brick
+  notes: ''
+- piece_name: l300100
+  display_name: L300100
+  token: 0x13
+  brick_id: 0xEE
+  vertex_count: 274
+  face_count: 12
+  sets:
+  - set_tag: 0x0B
+    valid_colors:
+    - black
+    - white
+    - red
+    - yellow
+    - blue
+  - set_tag: 0x10
+    valid_colors:
+    - ltgray
+  single_color_lock: false
+  category: basic_brick
+  notes: ''
+- piece_name: l300200
+  display_name: L300200
+  token: 0x13
+  brick_id: 0x8D
+  vertex_count: 29
+  face_count: 12
+  sets:
+  - set_tag: 0x0B
+    valid_colors:
+    - black
+    - white
+    - red
+    - yellow
+    - blue
+  - set_tag: 0x10
+    valid_colors:
+    - ltgray
+  single_color_lock: false
+  category: basic_brick
+  notes: ''
+- piece_name: l300300
+  display_name: L300300
+  token: 0x13
+  brick_id: 0x8E
+  vertex_count: 36
+  face_count: 12
+  sets:
+  - set_tag: 0x0B
+    valid_colors:
+    - black
+    - white
+    - red
+    - yellow
+    - blue
+  - set_tag: 0x10
+    valid_colors:
+    - ltgray
+  single_color_lock: false
+  category: basic_brick
+  notes: ''
+- piece_name: l300400
+  display_name: L300400
+  token: 0x13
+  brick_id: 0x8F
+  vertex_count: 41
+  face_count: 12
+  sets:
+  - set_tag: 0x0B
+    valid_colors:
+    - black
+    - white
+    - red
+    - yellow
+    - blue
+  - set_tag: 0x10
+    valid_colors:
+    - ltgray
+  single_color_lock: false
+  category: basic_brick
+  notes: ''
+- piece_name: l301000
+  display_name: L301000
+  token: 0x13
+  brick_id: 0x90
+  vertex_count: 44
+  face_count: 12
+  sets:
+  - set_tag: 0x0B
+    valid_colors:
+    - black
+    - white
+    - red
+    - yellow
+    - blue
+  - set_tag: 0x10
+    valid_colors:
+    - ltgray
+  single_color_lock: false
+  category: basic_brick
+  notes: ''
+- piece_name: l303800
+  display_name: L303800
+  token: 0x13
+  brick_id: 0x95
+  vertex_count: 49
+  face_count: 16
+  sets:
+  - set_tag: 0x16
+    valid_colors:
+    - white
+  single_color_lock: true
+  category: basic_brick
+  notes: ''
+- piece_name: l303900
+  display_name: L303900
+  token: 0x13
+  brick_id: 0x96
+  vertex_count: 56
+  face_count: 16
+  sets:
+  - set_tag: 0x0C
+    valid_colors:
+    - red
+    - yellow
+    - blue
+  - set_tag: 0x0D
+    valid_colors:
+    - white
+  - set_tag: 0x0E
+    valid_colors:
+    - black
+  - set_tag: 0x10
+    valid_colors:
+    - ltgray
+  - set_tag: 0x12
+    valid_colors:
+    - biege
+  single_color_lock: false
+  category: basic_brick
+  notes: ''
+- piece_name: l304000
+  display_name: L304000
+  token: 0x13
+  brick_id: 0x97
+  vertex_count: 61
+  face_count: 16
+  sets:
+  - set_tag: 0x0C
+    valid_colors:
+    - red
+    - yellow
+    - blue
+  - set_tag: 0x0D
+    valid_colors:
+    - white
+  - set_tag: 0x0E
+    valid_colors:
+    - black
+  - set_tag: 0x10
+    valid_colors:
+    - ltgray
+  single_color_lock: false
+  category: basic_brick
+  notes: ''
+- piece_name: l304500
+  display_name: L304500
+  token: 0x13
+  brick_id: 0xF1
+  vertex_count: 293
+  face_count: 20
+  sets:
+  - set_tag: 0x0E
+    valid_colors:
+    - black
+    - red
+    - blue
+  - set_tag: 0x12
+    valid_colors:
+    - biege
+  single_color_lock: false
+  category: basic_brick
+  notes: ''
+- piece_name: l304900
+  display_name: L304900
+  token: 0x13
+  brick_id: 0x98
+  vertex_count: 64
+  face_count: 16
+  sets:
+  - set_tag: 0x14
+    valid_colors:
+    - black
+  single_color_lock: true
+  category: basic_brick
+  notes: ''
+- piece_name: l329800
+  display_name: L329800
+  token: 0x13
+  brick_id: 0x9C
+  vertex_count: 82
+  face_count: 18
+  sets:
+  - set_tag: 0x0C
+    valid_colors:
+    - red
+    - yellow
+    - blue
+  - set_tag: 0x0D
+    valid_colors:
+    - white
+  - set_tag: 0x0E
+    valid_colors:
+    - black
+  - set_tag: 0x10
+    valid_colors:
+    - ltgray
+  single_color_lock: false
+  category: basic_brick
+  notes: ''
+- piece_name: l347500
+  display_name: L347500
+  token: 0x13
+  brick_id: 0x9D
+  vertex_count: 89
+  face_count: 68
+  sets:
+  - set_tag: 0x0D
+    valid_colors:
+    - black
+    - white
+  - set_tag: 0x14
+    valid_colors:
+    - blue
+  single_color_lock: false
+  category: basic_brick
+  notes: ''
+- piece_name: l347800
+  display_name: L347800
+  token: 0x13
+  brick_id: 0xF2
+  vertex_count: 298
+  face_count: 44
+  sets:
+  - set_tag: 0x0D
+    valid_colors:
+    - black
+    - white
+  single_color_lock: false
+  category: basic_brick
+  notes: ''
+- piece_name: l362200
+  display_name: L362200
+  token: 0x13
+  brick_id: 0x9F
+  vertex_count: 102
+  face_count: 12
+  sets:
+  - set_tag: 0x0B
+    valid_colors:
+    - black
+    - white
+    - red
+    - yellow
+    - blue
+  - set_tag: 0x10
+    valid_colors:
+    - ltgray
+  single_color_lock: false
+  category: basic_brick
+  notes: ''
+- piece_name: l395700
+  display_name: L395700
+  token: 0x13
+  brick_id: 0xA1
+  vertex_count: 106
+  face_count: 60
+  sets:
+  - set_tag: 0x0D
+    valid_colors:
+    - black
+  single_color_lock: true
+  category: basic_brick
+  notes: ''
+- piece_name: l428600
+  display_name: L428600
+  token: 0x13
+  brick_id: 0xA5
+  vertex_count: 118
+  face_count: 16
+  sets:
+  - set_tag: 0x0C
+    valid_colors:
+    - red
+    - yellow
+    - blue
+  - set_tag: 0x0D
+    valid_colors:
+    - white
+  - set_tag: 0x0E
+    valid_colors:
+    - black
+  - set_tag: 0x10
+    valid_colors:
+    - ltgray
+  single_color_lock: false
+  category: basic_brick
+  notes: ''
+- piece_name: l474600
+  display_name: L474600
+  token: 0x13
+  brick_id: 0xA7
+  vertex_count: 122
+  face_count: 216
+  sets:
+  - set_tag: 0x0D
+    valid_colors:
+    - black
+  single_color_lock: true
+  category: basic_brick
+  notes: ''
+- piece_name: l656400
+  display_name: L656400
+  token: 0x13
+  brick_id: 0xAB
+  vertex_count: 133
+  face_count: 28
+  sets:
+  - set_tag: 0x0D
+    valid_colors:
+    - white
+  - set_tag: 0x0F
+    valid_colors:
+    - red
+    - yellow
+  - set_tag: 0x11
+    valid_colors:
+    - black
+  - set_tag: 0x14
+    valid_colors:
+    - blue
+  single_color_lock: false
+  category: basic_brick
+  notes: ''
+- piece_name: l656500
+  display_name: L656500
+  token: 0x13
+  brick_id: 0xAC
+  vertex_count: 140
+  face_count: 28
+  sets:
+  - set_tag: 0x0D
+    valid_colors:
+    - white
+  - set_tag: 0x0F
+    valid_colors:
+    - red
+    - yellow
+  - set_tag: 0x11
+    valid_colors:
+    - black
+  - set_tag: 0x14
+    valid_colors:
+    - blue
+  single_color_lock: false
+  category: basic_brick
+  notes: ''
+- piece_name: l81423
+  display_name: L81423
+  token: 0x13
+  brick_id: 0xAE
+  vertex_count: 147
+  face_count: 12
+  sets:
+  - set_tag: 0x0F
+    valid_colors:
+    - white
+  single_color_lock: true
+  category: basic_brick
+  notes: ''
+- piece_name: l81926
+  display_name: L81926
+  token: 0x13
+  brick_id: 0xAF
+  vertex_count: 152
+  face_count: 12
+  sets:
+  - set_tag: 0x11
+    valid_colors:
+    - white
+  single_color_lock: true
+  category: basic_brick
+  notes: ''
+- piece_name: l82527
+  display_name: L82527
+  token: 0x13
+  brick_id: 0xB0
+  vertex_count: 157
+  face_count: 26
+  sets:
+  - set_tag: 0x0D
+    valid_colors:
+    - white
+  single_color_lock: true
+  category: basic_brick
+  notes: ''
+- piece_name: l82528
+  display_name: L82528
+  token: 0x13
+  brick_id: 0xB1
+  vertex_count: 162
+  face_count: 26
+  sets:
+  - set_tag: 0x0D
+    valid_colors:
+    - white
+  single_color_lock: true
+  category: basic_brick
+  notes: ''
+- piece_name: l82529
+  display_name: L82529
+  token: 0x13
+  brick_id: 0xB2
+  vertex_count: 169
+  face_count: 20
+  sets:
+  - set_tag: 0x0D
+    valid_colors:
+    - white
+  single_color_lock: true
+  category: basic_brick
+  notes: ''
+- piece_name: l82530
+  display_name: L82530
+  token: 0x13
+  brick_id: 0xB3
+  vertex_count: 174
+  face_count: 20
+  sets:
+  - set_tag: 0x0D
+    valid_colors:
+    - black
+  single_color_lock: true
+  category: basic_brick
+  notes: ''
+- piece_name: s00003
+  display_name: S00003
+  token: 0x13
+  brick_id: 0xB6
+  vertex_count: 179
+  face_count: 36
+  sets:
+  - set_tag: 0x0F
+    valid_colors:
+    - brown
+  single_color_lock: true
+  category: basic_brick
+  notes: ''
+- piece_name: s00007
+  display_name: S00007
+  token: 0x13
+  brick_id: 0xBE
+  vertex_count: 191
+  face_count: 75
+  sets:
+  - set_tag: 0x12
+    valid_colors:
+    - black
+  single_color_lock: true
+  category: basic_brick
+  notes: ''
+- piece_name: s00008
+  display_name: S00008
+  token: 0x13
+  brick_id: 0xBF
+  vertex_count: 200
+  face_count: 26
+  sets:
+  - set_tag: 0x10
+    valid_colors:
+    - ltgray
+  single_color_lock: true
+  category: basic_brick
+  notes: ''
+- piece_name: s00011
+  display_name: S00011
+  token: 0x13
+  brick_id: 0xC1
+  vertex_count: 205
+  face_count: 12
+  sets:
+  - set_tag: 0x10
+    valid_colors:
+    - ltgray
+  - set_tag: 0x16
+    valid_colors:
+    - white
+  single_color_lock: true
+  category: basic_brick
+  notes: ''
+- piece_name: s00014
+  display_name: S00014
+  token: 0x13
+  brick_id: 0xC3
+  vertex_count: 208
+  face_count: 49
+  sets:
+  - set_tag: 0x12
+    valid_colors:
+    - ltgray
+  single_color_lock: true
+  category: basic_brick
+  notes: ''
+- piece_name: s00016
+  display_name: S00016
+  token: 0x13
+  brick_id: 0xC5
+  vertex_count: 215
+  face_count: 26
+  sets:
+  - set_tag: 0x10
+    valid_colors:
+    - ltgray
+  single_color_lock: true
+  category: basic_brick
+  notes: ''
+- piece_name: s00017
+  display_name: S00017
+  token: 0x13
+  brick_id: 0xC6
+  vertex_count: 219
+  face_count: 58
+  sets:
+  - set_tag: 0x11
+    valid_colors:
+    - ltgray
+  single_color_lock: true
+  category: basic_brick
+  notes: ''
+- piece_name: s00018
+  display_name: S00018
+  token: 0x13
+  brick_id: 0xF4
+  vertex_count: 304
+  face_count: 38
+  sets:
+  - set_tag: 0x13
+    valid_colors:
+    - ltgray
+  single_color_lock: true
+  category: basic_brick
+  notes: ''
+- piece_name: s00019
+  display_name: S00019
+  token: 0x13
+  brick_id: 0xF5
+  vertex_count: 313
+  face_count: 20
+  sets:
+  - set_tag: 0x0D
+    valid_colors:
+    - white
+  - set_tag: 0x13
+    valid_colors:
+    - ltgray
+  single_color_lock: true
+  category: basic_brick
+  notes: ''
+- piece_name: s00020
+  display_name: S00020
+  token: 0x13
+  brick_id: 0xF6
+  vertex_count: 316
+  face_count: 32
+  sets:
+  - set_tag: 0x13
+    valid_colors:
+    - ltgray
+  single_color_lock: true
+  category: basic_brick
+  notes: ''
+- piece_name: s00021
+  display_name: S00021
+  token: 0x13
+  brick_id: 0xF7
+  vertex_count: 321
+  face_count: 52
+  sets:
+  - set_tag: 0x0F
+    valid_colors:
+    - yellow
+  single_color_lock: true
+  category: basic_brick
+  notes: ''
+- piece_name: s00022
+  display_name: S00022
+  token: 0x13
+  brick_id: 0xF8
+  vertex_count: 326
+  face_count: 55
+  sets:
+  - set_tag: 0x0C
+    valid_colors:
+    - black
+  single_color_lock: true
+  category: basic_brick
+  notes: ''
+- piece_name: s00023
+  display_name: S00023
+  token: 0x13
+  brick_id: 0xF9
+  vertex_count: 335
+  face_count: 55
+  sets:
+  - set_tag: 0x0C
+    valid_colors:
+    - black
+  single_color_lock: true
+  category: basic_brick
+  notes: ''
+- piece_name: s00026
+  display_name: S00026
+  token: 0x14
+  brick_id: 0x08
+  vertex_count: 419
+  face_count: 12
+  sets:
+  - set_tag: 0x0D
+    valid_colors:
+    - black
+  single_color_lock: true
+  category: decoration
+  notes: ''
+- piece_name: s00027
+  display_name: S00027
+  token: 0x14
+  brick_id: 0x09
+  vertex_count: 422
+  face_count: 12
+  sets:
+  - set_tag: 0x0D
+    valid_colors:
+    - white
+  single_color_lock: true
+  category: decoration
+  notes: ''
+- piece_name: s00028
+  display_name: S00028
+  token: 0x14
+  brick_id: 0x0A
+  vertex_count: 425
+  face_count: 12
+  sets:
+  - set_tag: 0x0D
+    valid_colors:
+    - black
+  single_color_lock: true
+  category: decoration
+  notes: ''
+- piece_name: s00029
+  display_name: S00029
+  token: 0x14
+  brick_id: 0x48
+  vertex_count: 840
+  face_count: 44
+  sets:
+  - set_tag: 0x11
+    valid_colors:
+    - dkgray
+  single_color_lock: true
+  category: decoration
+  notes: ''
+- piece_name: s00030
+  display_name: S00030
+  token: 0x14
+  brick_id: 0x49
+  vertex_count: 845
+  face_count: 20
+  sets:
+  - set_tag: 0x13
+    valid_colors:
+    - dkgray
+  single_color_lock: true
+  category: decoration
+  notes: ''
+- piece_name: s00031
+  display_name: S00031
+  token: 0x14
+  brick_id: 0x4A
+  vertex_count: 848
+  face_count: 32
+  sets:
+  - set_tag: 0x13
+    valid_colors:
+    - ltgray
+  single_color_lock: true
+  category: decoration
+  notes: ''
+- piece_name: s00032
+  display_name: S00032
+  token: 0x14
+  brick_id: 0x4B
+  vertex_count: 853
+  face_count: 24
+  sets:
+  - set_tag: 0x11
+    valid_colors:
+    - black
+  single_color_lock: true
+  category: decoration
+  notes: ''
+- piece_name: s243200
+  display_name: S243200
+  token: 0x13
+  brick_id: 0xBB
+  vertex_count: 188
+  face_count: 50
+  sets:
+  - set_tag: 0x0C
+    valid_colors:
+    - dkgray
+  - set_tag: 0x0D
+    valid_colors:
+    - white
+  - set_tag: 0x0F
+    valid_colors:
+    - yellow
+  - set_tag: 0x14
+    valid_colors:
+    - blue
+  - set_tag: 0x16
+    valid_colors:
+    - red
+  single_color_lock: true
+  category: basic_brick
+  notes: ''
+- piece_name: s243201
+  display_name: S243201
+  token: 0x13
+  brick_id: 0xFA
+  vertex_count: 344
+  face_count: 42
+  sets:
+  - set_tag: 0x0C
+    valid_colors:
+    - black
+    - white
+    - red
+    - yellow
+    - blue
+  single_color_lock: false
+  category: basic_brick
+  notes: ''
+- piece_name: s395700
+  display_name: S395700
+  token: 0x13
+  brick_id: 0xFB
+  vertex_count: 353
+  face_count: 64
+  sets:
+  - set_tag: 0x0C
+    valid_colors:
+    - red
+    - yellow
+    - blue
+  single_color_lock: false
+  category: basic_brick
+  notes: ''
+- piece_name: sa0010
+  display_name: Sa0010
+  token: 0x13
+  brick_id: 0xD0
+  vertex_count: 236
+  face_count: 51
+  sets:
+  - set_tag: 0x0E
+    valid_colors:
+    - black
+  single_color_lock: true
+  category: basic_brick
+  notes: ''
+- piece_name: sa0011
+  display_name: Sa0011
+  token: 0x13
+  brick_id: 0xD1
+  vertex_count: 241
+  face_count: 51
+  sets:
+  - set_tag: 0x0E
+    valid_colors:
+    - black
+  single_color_lock: true
+  category: basic_brick
+  notes: ''
+- piece_name: sa0012
+  display_name: Sa0012
+  token: 0x13
+  brick_id: 0xFC
+  vertex_count: 357
+  face_count: 36
+  sets:
+  - set_tag: 0x14
+    valid_colors:
+    - blue
+  single_color_lock: true
+  category: basic_brick
+  notes: ''
+- piece_name: sadm_flg
+  display_name: Sadm Flg
+  token: 0x13
+  brick_id: 0xFD
+  vertex_count: 366
+  face_count: 68
+  sets:
+  - set_tag: 0x0F
+    valid_colors:
+    - black
+  single_color_lock: true
+  category: basic_brick
+  notes: ''
+- piece_name: saln1
+  display_name: Saln1
+  token: 0x14
+  brick_id: 0x35
+  vertex_count: 723
+  face_count: 26
+  sets:
+  - set_tag: 0x14
+    valid_colors:
+    - dkgray
+  single_color_lock: true
+  category: decoration
+  notes: ''
+- piece_name: saln2
+  display_name: Saln2
+  token: 0x14
+  brick_id: 0x36
+  vertex_count: 730
+  face_count: 26
+  sets:
+  - set_tag: 0x14
+    valid_colors:
+    - dkgray
+  single_color_lock: true
+  category: decoration
+  notes: ''
+- piece_name: saln3
+  display_name: Saln3
+  token: 0x14
+  brick_id: 0x37
+  vertex_count: 737
+  face_count: 26
+  sets:
+  - set_tag: 0x14
+    valid_colors:
+    - blue
+  single_color_lock: true
+  category: decoration
+  notes: ''
+- piece_name: saln4
+  display_name: Saln4
+  token: 0x14
+  brick_id: 0x38
+  vertex_count: 744
+  face_count: 20
+  sets:
+  - set_tag: 0x14
+    valid_colors:
+    - dkgray
+  single_color_lock: true
+  category: decoration
+  notes: ''
+- piece_name: saln5
+  display_name: Saln5
+  token: 0x14
+  brick_id: 0x39
+  vertex_count: 749
+  face_count: 20
+  sets:
+  - set_tag: 0x14
+    valid_colors:
+    - black
+  single_color_lock: true
+  category: decoration
+  notes: ''
+- piece_name: saln6
+  display_name: Saln6
+  token: 0x14
+  brick_id: 0x3A
+  vertex_count: 754
+  face_count: 20
+  sets:
+  - set_tag: 0x14
+    valid_colors:
+    - blue
+  single_color_lock: true
+  category: decoration
+  notes: ''
+- piece_name: saln7
+  display_name: Saln7
+  token: 0x14
+  brick_id: 0x3B
+  vertex_count: 759
+  face_count: 12
+  sets:
+  - set_tag: 0x14
+    valid_colors:
+    - black
+  single_color_lock: true
+  category: decoration
+  notes: ''
+- piece_name: saln8
+  display_name: Saln8
+  token: 0x14
+  brick_id: 0x3C
+  vertex_count: 762
+  face_count: 12
+  sets:
+  - set_tag: 0x14
+    valid_colors:
+    - black
+  single_color_lock: true
+  category: decoration
+  notes: ''
+- piece_name: saln9
+  display_name: Saln9
+  token: 0x14
+  brick_id: 0x3D
+  vertex_count: 765
+  face_count: 12
+  sets:
+  - set_tag: 0x14
+    valid_colors:
+    - black
+  single_color_lock: true
+  category: decoration
+  notes: ''
+- piece_name: salnds2
+  display_name: Salnds2
+  token: 0x14
+  brick_id: 0x40
+  vertex_count: 777
+  face_count: 40
+  sets:
+  - set_tag: 0x14
+    valid_colors:
+    - black
+  single_color_lock: true
+  category: decoration
+  notes: ''
+- piece_name: salndsh
+  display_name: Salndsh
+  token: 0x14
+  brick_id: 0x41
+  vertex_count: 793
+  face_count: 40
+  sets:
+  - set_tag: 0x14
+    valid_colors:
+    - black
+  single_color_lock: true
+  category: decoration
+  notes: ''
+- piece_name: salngem
+  display_name: Salngem
+  token: 0x14
+  brick_id: 0x42
+  vertex_count: 806
+  face_count: 50
+  sets:
+  - set_tag: 0x14
+    valid_colors:
+    - green
+  single_color_lock: true
+  category: decoration
+  notes: ''
+- piece_name: salnps2
+  display_name: Salnps2
+  token: 0x14
+  brick_id: 0x3F
+  vertex_count: 770
+  face_count: 74
+  sets:
+  - set_tag: 0x14
+    valid_colors:
+    - black
+  single_color_lock: true
+  category: decoration
+  notes: ''
+- piece_name: salnpst
+  display_name: Salnpst
+  token: 0x14
+  brick_id: 0x3E
+  vertex_count: 768
+  face_count: 60
+  sets:
+  - set_tag: 0x14
+    valid_colors:
+    - green
+  single_color_lock: true
+  category: decoration
+  notes: ''
+- piece_name: samazon
+  display_name: Samazon
+  token: 0x14
+  brick_id: 0x47
+  vertex_count: 837
+  face_count: 12
+  sets:
+  - set_tag: 0x13
+    valid_colors:
+    - ltgray
+  single_color_lock: true
+  category: decoration
+  notes: ''
+- piece_name: saxe
+  display_name: Saxe
+  token: 0x14
+  brick_id: 0x58
+  vertex_count: 951
+  face_count: 60
+  sets:
+  - set_tag: 0x11
+    valid_colors:
+    - black
+  single_color_lock: true
+  category: decoration
+  notes: ''
+- piece_name: saxe1
+  display_name: Saxe1
+  token: 0x14
+  brick_id: 0x59
+  vertex_count: 970
+  face_count: 60
+  sets:
+  - set_tag: 0x11
+    valid_colors:
+    - black
+  single_color_lock: true
+  category: decoration
+  notes: ''
+- piece_name: sbat
+  display_name: Sbat
+  token: 0x14
+  brick_id: 0x55
+  vertex_count: 916
+  face_count: 53
+  sets:
+  - set_tag: 0x11
+    valid_colors:
+    - ltgray
+  single_color_lock: true
+  category: decoration
+  notes: ''
+- piece_name: sbckpak
+  display_name: Sbckpak
+  token: 0x14
+  brick_id: 0x63
+  vertex_count: 1081
+  face_count: 48
+  sets:
+  - set_tag: 0x0F
+    valid_colors:
+    - black
+  single_color_lock: true
+  category: decoration
+  notes: ''
+- piece_name: scylnder
+  display_name: Scylnder
+  token: 0x14
+  brick_id: 0x16
+  vertex_count: 493
+  face_count: 40
+  sets:
+  - set_tag: 0x15
+    valid_colors:
+    - white
+  single_color_lock: true
+  category: decoration
+  notes: ''
+- piece_name: sdrum
+  display_name: Sdrum
+  token: 0x14
+  brick_id: 0x0E
+  vertex_count: 461
+  face_count: 60
+  sets:
+  - set_tag: 0x10
+    valid_colors:
+    - red
+  single_color_lock: true
+  category: decoration
+  notes: ''
+- piece_name: sdsrtax1
+  display_name: Sdsrtax1
+  token: 0x14
+  brick_id: 0x2D
+  vertex_count: 657
+  face_count: 56
+  sets:
+  - set_tag: 0x12
+    valid_colors:
+    - black
+  single_color_lock: true
+  category: decoration
+  notes: ''
+- piece_name: sdsrtax2
+  display_name: Sdsrtax2
+  token: 0x14
+  brick_id: 0x2E
+  vertex_count: 668
+  face_count: 56
+  sets:
+  - set_tag: 0x12
+    valid_colors:
+    - black
+  single_color_lock: true
+  category: decoration
+  notes: ''
+- piece_name: sdsrtbox
+  display_name: Sdsrtbox
+  token: 0x14
+  brick_id: 0x33
+  vertex_count: 707
+  face_count: 44
+  sets:
+  - set_tag: 0x12
+    valid_colors:
+    - brown
+  single_color_lock: true
+  category: decoration
+  notes: ''
+- piece_name: sdsrtgrl
+  display_name: Sdsrtgrl
+  token: 0x14
+  brick_id: 0x30
+  vertex_count: 688
+  face_count: 64
+  sets:
+  - set_tag: 0x12
+    valid_colors:
+    - dkgray
+  single_color_lock: true
+  category: decoration
+  notes: ''
+- piece_name: sdsrth1
+  display_name: Sdsrth1
+  token: 0x14
+  brick_id: 0x26
+  vertex_count: 616
+  face_count: 12
+  sets:
+  - set_tag: 0x12
+    valid_colors:
+    - biege
+  single_color_lock: true
+  category: decoration
+  notes: ''
+- piece_name: sdsrth2
+  display_name: Sdsrth2
+  token: 0x14
+  brick_id: 0x27
+  vertex_count: 621
+  face_count: 12
+  sets:
+  - set_tag: 0x12
+    valid_colors:
+    - biege
+  single_color_lock: true
+  category: decoration
+  notes: ''
+- piece_name: sdsrth3
+  display_name: Sdsrth3
+  token: 0x14
+  brick_id: 0x28
+  vertex_count: 626
+  face_count: 12
+  sets:
+  - set_tag: 0x12
+    valid_colors:
+    - biege
+  single_color_lock: true
+  category: decoration
+  notes: ''
+- piece_name: sdsrth4
+  display_name: Sdsrth4
+  token: 0x14
+  brick_id: 0x29
+  vertex_count: 629
+  face_count: 12
+  sets:
+  - set_tag: 0x12
+    valid_colors:
+    - biege
+  single_color_lock: true
+  category: decoration
+  notes: ''
+- piece_name: sdsrtltr
+  display_name: Sdsrtltr
+  token: 0x14
+  brick_id: 0x2A
+  vertex_count: 632
+  face_count: 56
+  sets:
+  - set_tag: 0x12
+    valid_colors:
+    - dkgray
+  single_color_lock: true
+  category: decoration
+  notes: ''
+- piece_name: sdsrtlty
+  display_name: Sdsrtlty
+  token: 0x14
+  brick_id: 0x2B
+  vertex_count: 641
+  face_count: 56
+  sets:
+  - set_tag: 0x12
+    valid_colors:
+    - dkgray
+  single_color_lock: true
+  category: decoration
+  notes: ''
+- piece_name: sdsrtmag
+  display_name: Sdsrtmag
+  token: 0x14
+  brick_id: 0x2C
+  vertex_count: 650
+  face_count: 32
+  sets:
+  - set_tag: 0x12
+    valid_colors:
+    - ltgray
+  single_color_lock: true
+  category: decoration
+  notes: ''
+- piece_name: sdsrtsd1
+  display_name: Sdsrtsd1
+  token: 0x14
+  brick_id: 0x31
+  vertex_count: 697
+  face_count: 24
+  sets:
+  - set_tag: 0x12
+    valid_colors:
+    - ltgray
+  single_color_lock: true
+  category: decoration
+  notes: ''
+- piece_name: sdsrtsd2
+  display_name: Sdsrtsd2
+  token: 0x14
+  brick_id: 0x32
+  vertex_count: 702
+  face_count: 24
+  sets:
+  - set_tag: 0x12
+    valid_colors:
+    - ltgray
+  single_color_lock: true
+  category: decoration
+  notes: ''
+- piece_name: sdsrtwdw
+  display_name: Sdsrtwdw
+  token: 0x14
+  brick_id: 0x2F
+  vertex_count: 679
+  face_count: 28
+  sets:
+  - set_tag: 0x12
+    valid_colors:
+    - ltgray
+  single_color_lock: true
+  category: decoration
+  notes: ''
+- piece_name: sflag
+  display_name: Sflag
+  token: 0x13
+  brick_id: 0xFE
+  vertex_count: 370
+  face_count: 80
+  sets:
+  - set_tag: 0x0E
+    valid_colors:
+    - black
+    - white
+    - red
+    - yellow
+    - blue
+  single_color_lock: false
+  category: basic_brick
+  notes: ''
+- piece_name: sfrgril
+  display_name: Sfrgril
+  token: 0x14
+  brick_id: 0x12
+  vertex_count: 471
+  face_count: 46
+  sets:
+  - set_tag: 0x15
+    valid_colors:
+    - black
+  single_color_lock: true
+  category: decoration
+  notes: ''
+- piece_name: sfrrgril
+  display_name: Sfrrgril
+  token: 0x14
+  brick_id: 0x13
+  vertex_count: 480
+  face_count: 24
+  sets:
+  - set_tag: 0x15
+    valid_colors:
+    - black
+  single_color_lock: true
+  category: decoration
+  notes: ''
+- piece_name: sidol
+  display_name: Sidol
+  token: 0x14
+  brick_id: 0x4E
+  vertex_count: 884
+  face_count: 28
+  sets:
+  - set_tag: 0x13
+    valid_colors:
+    - ltgray
+  single_color_lock: true
+  category: decoration
+  notes: ''
+- piece_name: sjundash
+  display_name: Sjundash
+  token: 0x14
+  brick_id: 0x45
+  vertex_count: 824
+  face_count: 12
+  sets:
+  - set_tag: 0x13
+    valid_colors:
+    - biege
+  single_color_lock: true
+  category: decoration
+  notes: ''
+- piece_name: sjungem
+  display_name: Sjungem
+  token: 0x14
+  brick_id: 0x34
+  vertex_count: 720
+  face_count: 20
+  sets:
+  - set_tag: 0x12
+    valid_colors:
+    - red
+  - set_tag: 0x13
+    valid_colors:
+    - green
+  single_color_lock: true
+  category: decoration
+  notes: ''
+- piece_name: sjunhood
+  display_name: Sjunhood
+  token: 0x14
+  brick_id: 0x4F
+  vertex_count: 889
+  face_count: 28
+  sets:
+  - set_tag: 0x13
+    valid_colors:
+    - ltgray
+  single_color_lock: true
+  category: decoration
+  notes: ''
+- piece_name: sjunmap
+  display_name: Sjunmap
+  token: 0x14
+  brick_id: 0x43
+  vertex_count: 816
+  face_count: 12
+  sets:
+  - set_tag: 0x13
+    valid_colors:
+    - biege
+  single_color_lock: true
+  category: decoration
+  notes: ''
+- piece_name: sjunprop
+  display_name: Sjunprop
+  token: 0x14
+  brick_id: 0x50
+  vertex_count: 894
+  face_count: 62
+  sets:
+  - set_tag: 0x13
+    valid_colors:
+    - dkgray
+  single_color_lock: true
+  category: decoration
+  notes: ''
+- piece_name: slamp
+  display_name: Slamp
+  token: 0x14
+  brick_id: 0x03
+  vertex_count: 375
+  face_count: 72
+  sets:
+  - set_tag: 0x0E
+    valid_colors:
+    - black
+  single_color_lock: true
+  category: decoration
+  notes: ''
+- piece_name: slance
+  display_name: Slance
+  token: 0x14
+  brick_id: 0x04
+  vertex_count: 378
+  face_count: 62
+  sets:
+  - set_tag: 0x0E
+    valid_colors:
+    - black
+  single_color_lock: true
+  category: decoration
+  notes: ''
+- piece_name: slance01
+  display_name: Slance01
+  token: 0x14
+  brick_id: 0x05
+  vertex_count: 397
+  face_count: 62
+  sets:
+  - set_tag: 0x0E
+    valid_colors:
+    - black
+  single_color_lock: true
+  category: decoration
+  notes: ''
+- piece_name: Spear
+  display_name: Spear
+  token: 0x14
+  brick_id: 0x0B
+  vertex_count: 428
+  face_count: 64
+  sets:
+  - set_tag: 0x10
+    valid_colors:
+    - yellow
+  single_color_lock: true
+  category: decoration
+  notes: ''
+- piece_name: spizza
+  display_name: Spizza
+  token: 0x14
+  brick_id: 0x15
+  vertex_count: 488
+  face_count: 36
+  sets:
+  - set_tag: 0x15
+    valid_colors:
+    - yellow
+  single_color_lock: true
+  category: decoration
+  notes: ''
+- piece_name: sprtfnce
+  display_name: Sprtfnce
+  token: 0x14
+  brick_id: 0x5B
+  vertex_count: 993
+  face_count: 56
+  sets:
+  - set_tag: 0x0F
+    valid_colors:
+    - black
+  single_color_lock: true
+  category: decoration
+  notes: ''
+- piece_name: sprtgun
+  display_name: Sprtgun
+  token: 0x14
+  brick_id: 0x60
+  vertex_count: 1050
+  face_count: 64
+  sets:
+  - set_tag: 0x0F
+    valid_colors:
+    - black
+  single_color_lock: true
+  category: decoration
+  notes: ''
+- piece_name: sprtgun2
+  display_name: Sprtgun2
+  token: 0x14
+  brick_id: 0x61
+  vertex_count: 1063
+  face_count: 64
+  sets:
+  - set_tag: 0x0F
+    valid_colors:
+    - black
+  single_color_lock: true
+  category: decoration
+  notes: ''
+- piece_name: sprtoar
+  display_name: Sprtoar
+  token: 0x14
+  brick_id: 0x5E
+  vertex_count: 1016
+  face_count: 54
+  sets:
+  - set_tag: 0x0F
+    valid_colors:
+    - black
+  single_color_lock: true
+  category: decoration
+  notes: ''
+- piece_name: sprtoar2
+  display_name: Sprtoar2
+  token: 0x14
+  brick_id: 0x5F
+  vertex_count: 1033
+  face_count: 54
+  sets:
+  - set_tag: 0x0F
+    valid_colors:
+    - black
+  single_color_lock: true
+  category: decoration
+  notes: ''
+- piece_name: sprtprt
+  display_name: Sprtprt
+  token: 0x14
+  brick_id: 0x62
+  vertex_count: 1076
+  face_count: 48
+  sets:
+  - set_tag: 0x0F
+    valid_colors:
+    - black
+  single_color_lock: true
+  category: decoration
+  notes: ''
+- piece_name: sprtswd
+  display_name: Sprtswd
+  token: 0x14
+  brick_id: 0x5C
+  vertex_count: 998
+  face_count: 45
+  sets:
+  - set_tag: 0x0F
+    valid_colors:
+    - black
+  single_color_lock: true
+  category: decoration
+  notes: ''
+- piece_name: sprtswd2
+  display_name: Sprtswd2
+  token: 0x14
+  brick_id: 0x5D
+  vertex_count: 1007
+  face_count: 45
+  sets:
+  - set_tag: 0x0F
+    valid_colors:
+    - black
+  single_color_lock: true
+  category: decoration
+  notes: ''
+- piece_name: sprt_flg
+  display_name: Sprt Flg
+  token: 0x14
+  brick_id: 0x5A
+  vertex_count: 989
+  face_count: 68
+  sets:
+  - set_tag: 0x0F
+    valid_colors:
+    - black
+  single_color_lock: true
+  category: decoration
+  notes: ''
+- piece_name: srifle02
+  display_name: Srifle02
+  token: 0x14
+  brick_id: 0x4D
+  vertex_count: 871
+  face_count: 65
+  sets:
+  - set_tag: 0x13
+    valid_colors:
+    - ltgray
+  single_color_lock: true
+  category: decoration
+  notes: ''
+- piece_name: srifle1
+  display_name: Srifle1
+  token: 0x14
+  brick_id: 0x4C
+  vertex_count: 858
+  face_count: 65
+  sets:
+  - set_tag: 0x13
+    valid_colors:
+    - ltgray
+  single_color_lock: true
+  category: decoration
+  notes: ''
+- piece_name: srocket
+  display_name: Srocket
+  token: 0x14
+  brick_id: 0x18
+  vertex_count: 503
+  face_count: 50
+  sets:
+  - set_tag: 0x15
+    valid_colors:
+    - black
+  single_color_lock: true
+  category: decoration
+  notes: ''
+- piece_name: srocket1
+  display_name: Srocket1
+  token: 0x14
+  brick_id: 0x19
+  vertex_count: 519
+  face_count: 50
+  sets:
+  - set_tag: 0x15
+    valid_colors:
+    - black
+  single_color_lock: true
+  category: decoration
+  notes: ''
+- piece_name: srrcube
+  display_name: Srrcube
+  token: 0x14
+  brick_id: 0x17
+  vertex_count: 498
+  face_count: 12
+  sets:
+  - set_tag: 0x15
+    valid_colors:
+    - white
+  single_color_lock: true
+  category: decoration
+  notes: ''
+- piece_name: SRRGRIL
+  display_name: SRRGRIL
+  token: 0x13
+  brick_id: 0xED
+  vertex_count: 271
+  face_count: 20
+  sets:
+  - set_tag: 0x15
+    valid_colors:
+    - black
+  single_color_lock: true
+  category: basic_brick
+  notes: ''
+- piece_name: srrgril2
+  display_name: Srrgril2
+  token: 0x14
+  brick_id: 0x11
+  vertex_count: 466
+  face_count: 26
+  sets:
+  - set_tag: 0x15
+    valid_colors:
+    - black
+  single_color_lock: true
+  category: decoration
+  notes: ''
+- piece_name: srrpipe
+  display_name: Srrpipe
+  token: 0x14
+  brick_id: 0x1A
+  vertex_count: 535
+  face_count: 83
+  sets:
+  - set_tag: 0x15
+    valid_colors:
+    - black
+  single_color_lock: true
+  category: decoration
+  notes: ''
+- piece_name: srrpipe1
+  display_name: Srrpipe1
+  token: 0x14
+  brick_id: 0x1B
+  vertex_count: 550
+  face_count: 83
+  sets:
+  - set_tag: 0x15
+    valid_colors:
+    - black
+  single_color_lock: true
+  category: decoration
+  notes: ''
+- piece_name: srrtgril
+  display_name: Srrtgril
+  token: 0x14
+  brick_id: 0x14
+  vertex_count: 483
+  face_count: 42
+  sets:
+  - set_tag: 0x15
+    valid_colors:
+    - black
+  single_color_lock: true
+  category: decoration
+  notes: ''
+- piece_name: SRRWNDW
+  display_name: SRRWNDW
+  token: 0x13
+  brick_id: 0xEC
+  vertex_count: 246
+  face_count: 32
+  sets:
+  - set_tag: 0x15
+    valid_colors:
+    - black
+  single_color_lock: true
+  category: basic_brick
+  notes: ''
+- piece_name: sshield1
+  display_name: Sshield1
+  token: 0x14
+  brick_id: 0x51
+  vertex_count: 903
+  face_count: 53
+  sets:
+  - set_tag: 0x11
+    valid_colors:
+    - black
+  single_color_lock: true
+  category: decoration
+  notes: ''
+- piece_name: sshield2
+  display_name: Sshield2
+  token: 0x14
+  brick_id: 0x52
+  vertex_count: 908
+  face_count: 53
+  sets:
+  - set_tag: 0x11
+    valid_colors:
+    - black
+  single_color_lock: true
+  category: decoration
+  notes: ''
+- piece_name: SSpear
+  display_name: Sspear
+  token: 0x14
+  brick_id: 0x0C
+  vertex_count: 435
+  face_count: 40
+  sets:
+  - set_tag: 0x10
+    valid_colors:
+    - ltgray
+  single_color_lock: true
+  category: decoration
+  notes: ''
+- piece_name: SSpear1
+  display_name: Sspear1
+  token: 0x14
+  brick_id: 0x0D
+  vertex_count: 448
+  face_count: 40
+  sets:
+  - set_tag: 0x10
+    valid_colors:
+    - ltgray
+  single_color_lock: true
+  category: decoration
+  notes: ''
+- piece_name: sspider
+  display_name: Sspider
+  token: 0x14
+  brick_id: 0x46
+  vertex_count: 827
+  face_count: 100
+  sets:
+  - set_tag: 0x13
+    valid_colors:
+    - black
+  single_color_lock: true
+  category: decoration
+  notes: ''
+- piece_name: ssword
+  display_name: Ssword
+  token: 0x14
+  brick_id: 0x56
+  vertex_count: 921
+  face_count: 84
+  sets:
+  - set_tag: 0x11
+    valid_colors:
+    - black
+  single_color_lock: true
+  category: decoration
+  notes: ''
+- piece_name: ssword01
+  display_name: Ssword01
+  token: 0x14
+  brick_id: 0x57
+  vertex_count: 936
+  face_count: 84
+  sets:
+  - set_tag: 0x11
+    valid_colors:
+    - black
+  single_color_lock: true
+  category: decoration
+  notes: ''
+- piece_name: stnt
+  display_name: Stnt
+  token: 0x14
+  brick_id: 0x44
+  vertex_count: 821
+  face_count: 12
+  sets:
+  - set_tag: 0x13
+    valid_colors:
+    - ltgray
+  single_color_lock: true
+  category: decoration
+  notes: ''
+- piece_name: storch
+  display_name: Storch
+  token: 0x14
+  brick_id: 0x07
+  vertex_count: 416
+  face_count: 46
+  sets:
+  - set_tag: 0x0E
+    valid_colors:
+    - black
+  single_color_lock: true
+  category: decoration
+  notes: ''
+- piece_name: svv0001
+  display_name: Svv0001
+  token: 0x14
+  brick_id: 0x1C
+  vertex_count: 565
+  face_count: 12
+  sets:
+  - set_tag: 0x16
+    valid_colors:
+    - red
+  single_color_lock: true
+  category: decoration
+  notes: ''
+- piece_name: svv0002
+  display_name: Svv0002
+  token: 0x14
+  brick_id: 0x1D
+  vertex_count: 568
+  face_count: 12
+  sets:
+  - set_tag: 0x16
+    valid_colors:
+    - yellow
+  single_color_lock: true
+  category: decoration
+  notes: ''
+- piece_name: svv0003
+  display_name: Svv0003
+  token: 0x14
+  brick_id: 0x1E
+  vertex_count: 571
+  face_count: 20
+  sets:
+  - set_tag: 0x16
+    valid_colors:
+    - white
+  single_color_lock: true
+  category: decoration
+  notes: ''
+- piece_name: svv0004
+  display_name: Svv0004
+  token: 0x14
+  brick_id: 0x1F
+  vertex_count: 576
+  face_count: 12
+  sets:
+  - set_tag: 0x16
+    valid_colors:
+    - white
+  single_color_lock: true
+  category: decoration
+  notes: ''
+- piece_name: svv0005
+  display_name: Svv0005
+  token: 0x14
+  brick_id: 0x20
+  vertex_count: 579
+  face_count: 12
+  sets:
+  - set_tag: 0x16
+    valid_colors:
+    - white
+  single_color_lock: true
+  category: decoration
+  notes: ''
+- piece_name: svv0007
+  display_name: Svv0007
+  token: 0x14
+  brick_id: 0x21
+  vertex_count: 582
+  face_count: 76
+  sets:
+  - set_tag: 0x16
+    valid_colors:
+    - dkgray
+  single_color_lock: true
+  category: decoration
+  notes: ''
+- piece_name: svv0008
+  display_name: Svv0008
+  token: 0x14
+  brick_id: 0x22
+  vertex_count: 584
+  face_count: 76
+  sets:
+  - set_tag: 0x16
+    valid_colors:
+    - dkgray
+  single_color_lock: true
+  category: decoration
+  notes: ''
+- piece_name: svv0009
+  display_name: Svv0009
+  token: 0x14
+  brick_id: 0x23
+  vertex_count: 586
+  face_count: 28
+  sets:
+  - set_tag: 0x16
+    valid_colors:
+    - black
+  single_color_lock: true
+  category: decoration
+  notes: ''
+- piece_name: svv0010
+  display_name: Svv0010
+  token: 0x14
+  brick_id: 0x24
+  vertex_count: 595
+  face_count: 36
+  sets:
+  - set_tag: 0x16
+    valid_colors:
+    - black
+  single_color_lock: true
+  category: decoration
+  notes: ''
+- piece_name: svvflg
+  display_name: Svvflg
+  token: 0x14
+  brick_id: 0x25
+  vertex_count: 612
+  face_count: 68
+  sets:
+  - set_tag: 0x16
+    valid_colors:
+    - dkgray
+  single_color_lock: true
+  category: decoration
+  notes: ''
+- piece_name: swand
+  display_name: Swand
+  token: 0x14
+  brick_id: 0x54
+  vertex_count: 913
+  face_count: 40
+  sets:
+  - set_tag: 0x11
+    valid_colors:
+    - red
+    - green
+  single_color_lock: false
+  category: decoration
+  notes: ''
+overrides: []

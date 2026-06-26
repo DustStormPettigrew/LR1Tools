@@ -58,6 +58,7 @@ namespace LR1Tools.Export
 			package.Units = coordinateSystem.Units ?? string.Empty;
 			package.Metadata = CloneMetadata(p_scene.Metadata);
 			package.Materials = new List<TrackMaterialJsonDto>();
+			package.Textures = new List<TrackTextureJsonDto>();
 			package.MaterialAnimations = new List<TrackMaterialAnimationJsonDto>();
 			package.Meshes = new List<TrackMeshJsonDto>();
 			package.Objects = new List<TrackObjectJsonDto>();
@@ -73,6 +74,11 @@ namespace LR1Tools.Export
 			for (int i = 0; i < p_scene.Materials.Count; i++)
 			{
 				package.Materials.Add(CreateMaterial(p_scene.Materials[i]));
+			}
+
+			for (int i = 0; i < p_scene.Textures.Count; i++)
+			{
+				package.Textures.Add(CreateTexture(p_scene.Textures[i]));
 			}
 
 			for (int i = 0; i < p_scene.MaterialAnimations.Count; i++)
@@ -158,6 +164,8 @@ namespace LR1Tools.Export
 			output.SourceIndex = GetNullableIntValue(source.SourceIndex, source.Metadata, "SourceIndex", "MaterialIndex", "GradientSetIndex");
 			output.TextureName = source.TextureName ?? string.Empty;
 			output.AlphaTextureName = source.AlphaTextureName ?? string.Empty;
+			output.TextureRef = CreateTextureReference(source.TextureRef);
+			output.AlphaTextureRef = CreateTextureReference(source.AlphaTextureRef);
 			output.DiffuseColor = ToColorArray(source.DiffuseColor);
 			output.Opacity = source.Opacity;
 			output.DoubleSided = source.DoubleSided;
@@ -175,6 +183,39 @@ namespace LR1Tools.Export
 				output.Gradients.Add(CreateGradient(source.Gradients[i]));
 			}
 
+			return output;
+		}
+
+		private static TrackTextureJsonDto CreateTexture(TrackTexture p_texture)
+		{
+			TrackTexture source = p_texture ?? new TrackTexture();
+			TrackTextureJsonDto output = new TrackTextureJsonDto();
+			output.Id = GetId(source.Id, source.Name);
+			output.Name = source.Name ?? string.Empty;
+			output.SourcePath = string.IsNullOrWhiteSpace(source.SourcePath) ? null : source.SourcePath;
+			output.ExportPath = string.IsNullOrWhiteSpace(source.ExportPath) ? null : source.ExportPath;
+			output.Width = source.Width;
+			output.Height = source.Height;
+			output.Format = source.Format ?? string.Empty;
+			output.HasAlpha = source.HasAlpha;
+			output.PaletteColorCount = source.PaletteColorCount;
+			output.Metadata = CloneMetadata(source.Metadata);
+			return output;
+		}
+
+		private static TrackTextureReferenceJsonDto CreateTextureReference(TrackTextureReference p_reference)
+		{
+			if (p_reference == null)
+			{
+				return null;
+			}
+
+			TrackTextureReferenceJsonDto output = new TrackTextureReferenceJsonDto();
+			output.TextureId = string.IsNullOrWhiteSpace(p_reference.TextureId) ? null : p_reference.TextureId;
+			output.Name = p_reference.Name ?? string.Empty;
+			output.SourcePath = string.IsNullOrWhiteSpace(p_reference.SourcePath) ? null : p_reference.SourcePath;
+			output.ExportPath = string.IsNullOrWhiteSpace(p_reference.ExportPath) ? null : p_reference.ExportPath;
+			output.Metadata = CloneMetadata(p_reference.Metadata);
 			return output;
 		}
 
@@ -233,6 +274,10 @@ namespace LR1Tools.Export
 			output.MeshName = source.MeshName ?? string.Empty;
 			output.MaterialName = source.MaterialName ?? string.Empty;
 			output.PathName = source.PathName ?? string.Empty;
+			output.AnimationRef = GetStringValue(source.AnimationRef, source.Metadata, "AnimationRef", "ADBName");
+			output.MaterialAnimationRef = GetStringValue(source.MaterialAnimationRef, source.Metadata, "MaterialAnimationRef");
+			output.AnimationSourceName = GetStringValue(source.AnimationSourceName, source.Metadata, "AnimationSourceName");
+			output.AnimationSourcePath = GetStringValue(source.AnimationSourcePath, source.Metadata, "AnimationSourcePath");
 			output.Visible = source.Visible;
 			output.Transform = CreateTransform(source.Transform);
 			output.Metadata = CloneMetadata(source.Metadata);

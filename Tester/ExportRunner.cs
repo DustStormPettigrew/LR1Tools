@@ -30,6 +30,13 @@ namespace LR1Tools.Tester
 
 			LogSelection(selection, outputPath);
 			scene.Metadata["Export.OutputPath"] = outputPath;
+			scene.Metadata["Export.TextureImagesEnabled"] = selection.ExportTextureImages ? "true" : "false";
+
+			if (selection.ExportTextureImages)
+			{
+				TrackTextureImageExporter.ExportSceneTextures(scene, outputPath);
+				LogTextureWarnings(scene);
+			}
 
 			TrackSceneJsonExporter.ExportToFile(scene, outputPath);
 			Console.WriteLine("Exported track scene JSON:");
@@ -72,6 +79,7 @@ namespace LR1Tools.Tester
 
 			ApplyMaterialReferences(scene, p_selection);
 			AddMaterialAnimations(scene, p_selection);
+			ApplyObjectAnimationReferences(scene, p_selection);
 			AddStartPositions(scene, p_selection.SpbPath);
 			AddCheckpoints(scene, p_selection.CpbPath);
 			AddPowerups(scene, p_selection.PwbPaths);
@@ -213,7 +221,8 @@ namespace LR1Tools.Tester
 			Dictionary<string, TDB_Texture> texturesByName = LoadTexturesByName(p_selection.TdbPaths);
 			foreach (TrackMaterial material in materialsByName.Values)
 			{
-				ApplyTextureReferenceMetadata(material, texturesByName, p_selection);
+				ApplyTextureReferenceMetadata(p_scene, material, material.TextureName, "Texture", texturesByName, p_selection, false);
+				ApplyTextureReferenceMetadata(p_scene, material, material.AlphaTextureName, "AlphaTexture", texturesByName, p_selection, true);
 			}
 		}
 
@@ -244,6 +253,138 @@ namespace LR1Tools.Tester
 
 					p_scene.MaterialAnimations.Add(animation);
 					AttachMaterialAnimation(p_scene, materialsByName, animation, mabPath);
+				}
+			}
+		}
+
+		private static void ApplyObjectAnimationReferences(TrackScene p_scene, SceneExportSelection p_selection)
+		{
+			if (p_scene == null || p_selection == null)
+			{
+				return;
+			}
+
+			Dictionary<string, string> adbPathsByName = CreateAssetPathLookup(p_selection.AdbPaths);
+			for (int objectIndex = 0; objectIndex < p_scene.Objects.Count; objectIndex++)
+			{
+				TrackObject obj = p_scene.Objects[objectIndex];
+				if (obj == null)
+				{
+					continue;
+				}
+
+				ApplyObjectAnimationReference(obj, adbPathsByName);
+			}
+
+			ApplyObjectMaterialAnimationReferences(p_scene.Objects, p_scene.Materials, p_scene.MaterialAnimations);
+			ApplyObjectMaterialAnimationReferences(p_scene.StartPositions, p_scene.Materials, p_scene.MaterialAnimations);
+			ApplyObjectMaterialAnimationReferences(p_scene.Checkpoints, p_scene.Materials, p_scene.MaterialAnimations);
+			ApplyObjectMaterialAnimationReferences(p_scene.Powerups, p_scene.Materials, p_scene.MaterialAnimations);
+			ApplyObjectMaterialAnimationReferences(p_scene.Hazards, p_scene.Materials, p_scene.MaterialAnimations);
+			ApplyObjectMaterialAnimationReferences(p_scene.Emitters, p_scene.Materials, p_scene.MaterialAnimations);
+		}
+
+		private static void ApplyObjectAnimationReference(TrackObject p_object, Dictionary<string, string> p_adbPathsByName)
+		{
+			if (p_object == null)
+			{
+				return;
+			}
+
+			string animationRef = GetNameKey(!string.IsNullOrWhiteSpace(p_object.AnimationRef) ? p_object.AnimationRef : GetMetadataValue(p_object.Metadata, "ADBName"));
+			if (string.IsNullOrEmpty(animationRef))
+			{
+				return;
+			}
+
+			p_object.AnimationRef = animationRef;
+			if (string.IsNullOrEmpty(p_object.AnimationSourceName))
+			{
+				p_object.AnimationSourceName = animationRef;
+			}
+
+			string resolvedPath;
+			if (p_adbPathsByName != null && p_adbPathsByName.TryGetValue(animationRef, out resolvedPath))
+			{
+				if (string.IsNullOrEmpty(p_object.AnimationSourcePath))
+				{
+					p_object.AnimationSourcePath = resolvedPath;
+				}
+			}
+			else
+			{
+				p_object.Metadata["CandidateAnimationRef"] = animationRef;
+			}
+		}
+
+		private static void ApplyObjectMaterialAnimationReferences(
+			IList<TrackObject> p_objects,
+			IList<TrackMaterial> p_materials,
+			IList<TrackMaterialAnimation> p_animations)
+		{
+			if (p_objects == null || p_materials == null || p_animations == null)
+			{
+				return;
+			}
+
+			Dictionary<string, TrackMaterial> materialsByName = CreateMaterialLookup(p_materials);
+			Dictionary<string, TrackMaterialAnimation> animationsById = CreateMaterialAnimationLookup(p_animations);
+
+			for (int objectIndex = 0; objectIndex < p_objects.Count; objectIndex++)
+			{
+				TrackObject obj = p_objects[objectIndex];
+				if (obj == null)
+				{
+					continue;
+				}
+
+				string materialName = GetNameKey(obj.MaterialName);
+				if (string.IsNullOrEmpty(materialName))
+				{
+					continue;
+				}
+
+				TrackMaterial material;
+				if (!materialsByName.TryGetValue(materialName, out material) || material == null || material.MaterialAnimationIds.Count == 0)
+				{
+					continue;
+				}
+
+				List<string> candidateIds = new List<string>();
+				for (int animationIndex = 0; animationIndex < material.MaterialAnimationIds.Count; animationIndex++)
+				{
+					string candidateId = GetNameKey(material.MaterialAnimationIds[animationIndex]);
+					if (!string.IsNullOrEmpty(candidateId))
+					{
+						AddUniqueName(candidateIds, candidateId);
+					}
+				}
+
+				if (candidateIds.Count == 1)
+				{
+					string materialAnimationRef = candidateIds[0];
+					obj.MaterialAnimationRef = materialAnimationRef;
+
+					TrackMaterialAnimation animation;
+					if (animationsById.TryGetValue(materialAnimationRef, out animation) && animation != null)
+					{
+						if (string.IsNullOrEmpty(obj.AnimationSourceName))
+						{
+							obj.AnimationSourceName = !string.IsNullOrWhiteSpace(animation.SourceName) ? animation.SourceName : materialAnimationRef;
+						}
+
+						if (string.IsNullOrEmpty(obj.AnimationSourcePath) && !string.IsNullOrWhiteSpace(animation.SourcePath))
+						{
+							obj.AnimationSourcePath = animation.SourcePath;
+						}
+					}
+
+					continue;
+				}
+
+				for (int candidateIndex = 0; candidateIndex < candidateIds.Count; candidateIndex++)
+				{
+					obj.Metadata[string.Format(CultureInfo.InvariantCulture, "CandidateMaterialAnimationRef[{0}]", candidateIndex)] = candidateIds[candidateIndex];
 				}
 			}
 		}
@@ -305,49 +446,174 @@ namespace LR1Tools.Tester
 		}
 
 		private static void ApplyTextureReferenceMetadata(
+			TrackScene p_scene,
 			TrackMaterial p_material,
+			string p_textureName,
+			string p_metadataPrefix,
 			Dictionary<string, TDB_Texture> p_texturesByName,
-			SceneExportSelection p_selection)
+			SceneExportSelection p_selection,
+			bool p_isAlphaTexture)
 		{
-			if (p_material == null || string.IsNullOrWhiteSpace(p_material.TextureName))
+			if (p_scene == null || p_material == null || string.IsNullOrWhiteSpace(p_textureName))
 			{
 				return;
 			}
 
-			string textureName = p_material.TextureName.Trim();
-			TDB_Texture texture;
-			if (p_texturesByName.TryGetValue(textureName, out texture))
+			string textureName = p_textureName.Trim();
+			TrackTextureReference textureReference = new TrackTextureReference();
+			textureReference.Name = textureName;
+
+			TDB_Texture texture = null;
+			if (p_texturesByName != null && p_texturesByName.TryGetValue(textureName, out texture))
 			{
-				p_material.Metadata["Texture.SourceFormat"] = "TDB";
-				p_material.Metadata["Texture.IsBitmap"] = texture.IsBitmap ? "true" : "false";
-				p_material.Metadata["Texture.Bool28"] = texture.Bool28 ? "true" : "false";
-				p_material.Metadata["Texture.Bool2B"] = texture.Bool2B ? "true" : "false";
-				p_material.Metadata["Texture.Bool2D"] = texture.Bool2D ? "true" : "false";
-				if (texture.HasColor2C)
+				p_material.Metadata[p_metadataPrefix + ".SourceFormat"] = "TDB";
+				p_material.Metadata[p_metadataPrefix + ".IsBitmap"] = texture.IsBitmap ? "true" : "false";
+				p_material.Metadata[p_metadataPrefix + ".FlipVertical"] = texture.FlipVertical ? "true" : "false";
+				p_material.Metadata[p_metadataPrefix + ".IsTga"] = texture.IsTga ? "true" : "false";
+				p_material.Metadata[p_metadataPrefix + ".Bool2D"] = texture.Bool2D ? "true" : "false";
+				textureReference.Metadata["SourceFormat"] = "TDB";
+				textureReference.Metadata["IsBitmap"] = texture.IsBitmap ? "true" : "false";
+				if (texture.HasChromaKey)
 				{
-					p_material.Metadata["Texture.Color2C"] = string.Format(CultureInfo.InvariantCulture, "{0},{1},{2}", texture.Color2C.R, texture.Color2C.G, texture.Color2C.B);
+					string colorValue = string.Format(CultureInfo.InvariantCulture, "{0},{1},{2}", texture.ChromaKey.R, texture.ChromaKey.G, texture.ChromaKey.B);
+					p_material.Metadata[p_metadataPrefix + ".ChromaKey"] = colorValue;
+					textureReference.Metadata["ChromaKey"] = colorValue;
 				}
 			}
 
 			string texturePath = ResolveTexturePath(p_selection, textureName);
 			if (!string.IsNullOrEmpty(texturePath))
 			{
-				p_material.Metadata["Texture.Path"] = texturePath;
-				p_material.Metadata["Texture.Extension"] = Path.GetExtension(texturePath);
-				if (string.Equals(Path.GetExtension(texturePath), ".BMP", StringComparison.OrdinalIgnoreCase))
+				textureReference.SourcePath = texturePath;
+				p_material.Metadata[p_metadataPrefix + ".Path"] = texturePath;
+				p_material.Metadata[p_metadataPrefix + ".Extension"] = Path.GetExtension(texturePath);
+			}
+			else
+			{
+				textureReference.Metadata["MissingSourcePath"] = "true";
+				p_material.Metadata[p_metadataPrefix + ".MissingSourcePath"] = "true";
+				p_material.Metadata[p_metadataPrefix + ".UnresolvedName"] = textureName;
+				AddUnresolvedTextureReference(p_selection, textureName);
+			}
+
+			TrackTexture sceneTexture = GetOrCreateSceneTexture(p_scene, textureName, texturePath);
+			PopulateTextureMetadata(sceneTexture, textureName, texturePath, texture, p_material, p_metadataPrefix);
+			textureReference.TextureId = sceneTexture.Id;
+			if (string.IsNullOrEmpty(textureReference.SourcePath))
+			{
+				textureReference.SourcePath = sceneTexture.SourcePath;
+			}
+
+			if (p_isAlphaTexture)
+			{
+				p_material.AlphaTextureRef = textureReference;
+			}
+			else
+			{
+				p_material.TextureRef = textureReference;
+			}
+		}
+
+		private static TrackTexture GetOrCreateSceneTexture(TrackScene p_scene, string p_textureName, string p_texturePath)
+		{
+			string textureKey = CreateTextureKey(p_textureName, p_texturePath);
+			for (int i = 0; i < p_scene.Textures.Count; i++)
+			{
+				TrackTexture existing = p_scene.Textures[i];
+				if (existing != null && string.Equals(CreateTextureKey(existing.Name, existing.SourcePath), textureKey, StringComparison.OrdinalIgnoreCase))
 				{
-					try
-					{
-						BMP bitmap = new BMP(texturePath);
-						p_material.Metadata["Texture.Width"] = bitmap.Width.ToString(CultureInfo.InvariantCulture);
-						p_material.Metadata["Texture.Height"] = bitmap.Height.ToString(CultureInfo.InvariantCulture);
-					}
-					catch (Exception ex)
-					{
-						p_material.Metadata["Texture.ReadError"] = ex.GetType().Name;
-					}
+					return existing;
 				}
 			}
+
+			TrackTexture texture = new TrackTexture();
+			texture.Name = !string.IsNullOrWhiteSpace(p_textureName) ? p_textureName.Trim() : string.Empty;
+			texture.Id = !string.IsNullOrWhiteSpace(p_texturePath) ? p_texturePath : texture.Name;
+			texture.SourcePath = p_texturePath ?? string.Empty;
+			p_scene.Textures.Add(texture);
+			return texture;
+		}
+
+		private static string CreateTextureKey(string p_textureName, string p_texturePath)
+		{
+			if (!string.IsNullOrWhiteSpace(p_texturePath))
+			{
+				return Path.GetFullPath(p_texturePath);
+			}
+
+			return GetNameKey(p_textureName) ?? string.Empty;
+		}
+
+		private static void PopulateTextureMetadata(
+			TrackTexture p_texture,
+			string p_textureName,
+			string p_texturePath,
+			TDB_Texture p_tdbTexture,
+			TrackMaterial p_material,
+			string p_metadataPrefix)
+		{
+			if (p_texture == null)
+			{
+				return;
+			}
+
+			if (string.IsNullOrEmpty(p_texture.Name))
+			{
+				p_texture.Name = p_textureName ?? string.Empty;
+			}
+
+			if (string.IsNullOrEmpty(p_texture.SourcePath) && !string.IsNullOrEmpty(p_texturePath))
+			{
+				p_texture.SourcePath = p_texturePath;
+			}
+
+			if (p_tdbTexture != null)
+			{
+				p_texture.Metadata["TDB.IsBitmap"] = p_tdbTexture.IsBitmap ? "true" : "false";
+				p_texture.Metadata["TDB.FlipVertical"] = p_tdbTexture.FlipVertical ? "true" : "false";
+				p_texture.Metadata["TDB.IsTga"] = p_tdbTexture.IsTga ? "true" : "false";
+				p_texture.Metadata["TDB.Bool2D"] = p_tdbTexture.Bool2D ? "true" : "false";
+				if (p_tdbTexture.HasChromaKey)
+				{
+					p_texture.Metadata["TDB.ChromaKey"] = string.Format(CultureInfo.InvariantCulture, "{0},{1},{2}", p_tdbTexture.ChromaKey.R, p_tdbTexture.ChromaKey.G, p_tdbTexture.ChromaKey.B);
+				}
+			}
+
+			if (string.IsNullOrEmpty(p_texturePath))
+			{
+				p_texture.Metadata["MissingSourcePath"] = "true";
+				return;
+			}
+
+			string extension = Path.GetExtension(p_texturePath);
+			p_texture.Metadata["SourceExtension"] = extension;
+			if (string.IsNullOrEmpty(p_texture.Format))
+			{
+				p_texture.Format = extension.TrimStart('.').ToUpperInvariant();
+			}
+
+			if (string.Equals(extension, ".BMP", StringComparison.OrdinalIgnoreCase))
+			{
+				try
+				{
+					BMP bitmap = new BMP(p_texturePath);
+					p_texture.Width = bitmap.Width;
+					p_texture.Height = bitmap.Height;
+					p_texture.HasAlpha = false;
+					p_material.Metadata[p_metadataPrefix + ".Width"] = bitmap.Width.ToString(CultureInfo.InvariantCulture);
+					p_material.Metadata[p_metadataPrefix + ".Height"] = bitmap.Height.ToString(CultureInfo.InvariantCulture);
+					p_material.Metadata[p_metadataPrefix + ".Format"] = p_texture.Format;
+				}
+				catch (Exception ex)
+				{
+					p_texture.Metadata["ReadError"] = ex.GetType().Name;
+					p_material.Metadata[p_metadataPrefix + ".ReadError"] = ex.GetType().Name;
+				}
+
+				return;
+			}
+
+			p_texture.Metadata["UnsupportedDecodeFormat"] = extension;
 		}
 
 		private static void AddStartPositions(TrackScene p_scene, string p_spbPath)
@@ -853,6 +1119,54 @@ namespace LR1Tools.Tester
 			return ids;
 		}
 
+		private static Dictionary<string, TrackMaterialAnimation> CreateMaterialAnimationLookup(IList<TrackMaterialAnimation> p_items)
+		{
+			Dictionary<string, TrackMaterialAnimation> lookup = new Dictionary<string, TrackMaterialAnimation>(StringComparer.OrdinalIgnoreCase);
+			if (p_items == null)
+			{
+				return lookup;
+			}
+
+			for (int i = 0; i < p_items.Count; i++)
+			{
+				TrackMaterialAnimation animation = p_items[i];
+				string key = GetNameKey(animation != null ? (!string.IsNullOrWhiteSpace(animation.Id) ? animation.Id : animation.Name) : null);
+				if (!string.IsNullOrEmpty(key))
+				{
+					lookup[key] = animation;
+				}
+			}
+
+			return lookup;
+		}
+
+		private static Dictionary<string, string> CreateAssetPathLookup(IList<string> p_paths)
+		{
+			Dictionary<string, string> lookup = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+			if (p_paths == null)
+			{
+				return lookup;
+			}
+
+			for (int i = 0; i < p_paths.Count; i++)
+			{
+				string path = p_paths[i];
+				string key = GetNameKey(!string.IsNullOrWhiteSpace(path) ? Path.GetFileNameWithoutExtension(path) : null);
+				if (!string.IsNullOrEmpty(key))
+				{
+					lookup[key] = path;
+				}
+			}
+
+			return lookup;
+		}
+
+		private static string GetMetadataValue(IDictionary<string, string> p_metadata, string p_key)
+		{
+			string value;
+			return p_metadata != null && !string.IsNullOrEmpty(p_key) && p_metadata.TryGetValue(p_key, out value) ? value : null;
+		}
+
 		private static string GetNameKey(string p_name)
 		{
 			return string.IsNullOrWhiteSpace(p_name) ? null : p_name.Trim();
@@ -937,7 +1251,7 @@ namespace LR1Tools.Tester
 
 			RAB_Track track = p_rab.Track;
 			p_metadata["RAB.TrackTitle"] = p_rab.TrackTitle ?? string.Empty;
-			p_metadata["RAB.TrackScene"] = track.MaybeTrackScene ?? string.Empty;
+			p_metadata["RAB.TrackScene"] = track.TrackScene ?? string.Empty;
 			p_metadata["RAB.StartPosFile"] = track.StartPosFile ?? string.Empty;
 			p_metadata["RAB.SkyBoxFile"] = track.SkyBoxFile ?? string.Empty;
 			p_metadata["RAB.HazardFile"] = track.HazardFile ?? string.Empty;
@@ -946,7 +1260,7 @@ namespace LR1Tools.Tester
 			AddMetadataArray(p_metadata, "RAB.PowerupFiles", track.PowerupFiles);
 			AddMetadataArray(p_metadata, "RAB.EmitterFiles", track.EmitterFiles);
 			AddMetadataArray(p_metadata, "RAB.CheckpointFiles", track.CheckpointFiles);
-			AddMetadataArray(p_metadata, "RAB.CollisionFiles", track.MaybeCollisionMeshes);
+			AddMetadataArray(p_metadata, "RAB.CollisionFiles", track.CollisionMeshes);
 		}
 
 		private static string DetermineExportType(SceneExportSelection p_selection)
@@ -1419,6 +1733,7 @@ namespace LR1Tools.Tester
 			selection.InstallationPath = p_installationPath;
 			selection.AutoResolveGdbReferences = ResolveAutoResolveGdbReferences(p_gameFiles);
 			selection.AutoResolveReferencedAssets = ResolveAutoResolveReferencedAssets(p_gameFiles);
+			selection.ExportTextureImages = HasExportTexturesFlag(p_args);
 
 			List<string> inputArgs = GetInputArguments(p_args);
 			if (inputArgs.Count > 0)
@@ -1470,11 +1785,17 @@ namespace LR1Tools.Tester
 			}
 
 			int lastArgumentIndex = p_args.Length - 1;
-			bool hasOutputArgument = IsJsonPath(p_args[lastArgumentIndex]);
+			int outputArgumentIndex = GetOutputArgumentIndex(p_args);
+			bool hasOutputArgument = outputArgumentIndex >= 0;
 
 			for (int i = 1; i < p_args.Length; i++)
 			{
-				if (hasOutputArgument && i == lastArgumentIndex)
+				if (IsOptionFlag(p_args[i]))
+				{
+					continue;
+				}
+
+				if (hasOutputArgument && i == outputArgumentIndex)
 				{
 					continue;
 				}
@@ -1492,6 +1813,11 @@ namespace LR1Tools.Tester
 		{
 			for (int i = 0; i < p_inputArgs.Count; i++)
 			{
+				if (TryAddExplicitTexturePath(p_selection, p_inputArgs[i]))
+				{
+					continue;
+				}
+
 				string resolved = ResolveExplicitPath(p_selection.InstallationPath, p_inputArgs[i]);
 				if (string.IsNullOrEmpty(resolved))
 				{
@@ -1528,6 +1854,10 @@ namespace LR1Tools.Tester
 				else if (string.Equals(extension, ".MAB", StringComparison.OrdinalIgnoreCase))
 				{
 					AddUniquePath(p_selection.MabPaths, resolved);
+				}
+				else if (string.Equals(extension, ".ADB", StringComparison.OrdinalIgnoreCase))
+				{
+					AddUniquePath(p_selection.AdbPaths, resolved);
 				}
 				else if (string.Equals(extension, ".SPB", StringComparison.OrdinalIgnoreCase))
 				{
@@ -1579,13 +1909,59 @@ namespace LR1Tools.Tester
 
 			AddConfiguredPaths(p_selection.InstallationPath, p_gameFiles.GdbPaths, p_selection.GdbPaths, p_selection.ExplicitGdbPaths);
 			AddConfiguredPaths(p_selection.InstallationPath, p_gameFiles.MabPaths, p_selection.MabPaths, null);
+			AddConfiguredPaths(p_selection.InstallationPath, p_gameFiles.AdbPaths, p_selection.AdbPaths, null);
 			AddConfiguredPaths(p_selection.InstallationPath, p_gameFiles.PwbPaths, p_selection.PwbPaths, null);
 			AddConfiguredPaths(p_selection.InstallationPath, p_gameFiles.EmbPaths, p_selection.EmbPaths, null);
 			AddConfiguredPaths(p_selection.InstallationPath, p_gameFiles.RrbPaths, p_selection.RrbPaths, null);
 			AddConfiguredPaths(p_selection.InstallationPath, p_gameFiles.MdbPaths, p_selection.MdbPaths, null);
 			AddConfiguredPaths(p_selection.InstallationPath, p_gameFiles.TdbPaths, p_selection.TdbPaths, null);
+			AddConfiguredTexturePaths(p_selection.InstallationPath, p_gameFiles.TexturePaths, p_selection.TexturePaths);
 
 			p_selection.PrimaryInputPath = GetPrimarySelectedPath(p_selection);
+		}
+
+		private static bool TryAddExplicitTexturePath(SceneExportSelection p_selection, string p_inputPath)
+		{
+			string resolved = ResolveExplicitFileOrDirectory(p_selection.InstallationPath, p_inputPath);
+			if (string.IsNullOrEmpty(resolved))
+			{
+				return false;
+			}
+
+			if (Directory.Exists(resolved))
+			{
+				AddUniquePath(p_selection.TexturePaths, resolved);
+				return true;
+			}
+
+			string extension = Path.GetExtension(resolved);
+			if (string.Equals(extension, ".BMP", StringComparison.OrdinalIgnoreCase) ||
+				string.Equals(extension, ".TGA", StringComparison.OrdinalIgnoreCase))
+			{
+				AddUniquePath(p_selection.TexturePaths, resolved);
+				return true;
+			}
+
+			return false;
+		}
+
+		private static void AddConfiguredTexturePaths(string p_installationPath, List<string> p_configuredPaths, List<string> p_target)
+		{
+			if (p_configuredPaths == null)
+			{
+				return;
+			}
+
+			for (int i = 0; i < p_configuredPaths.Count; i++)
+			{
+				string resolved = ResolveExplicitFileOrDirectory(p_installationPath, p_configuredPaths[i]);
+				if (string.IsNullOrEmpty(resolved))
+				{
+					continue;
+				}
+
+				AddUniquePath(p_target, resolved);
+			}
 		}
 
 		private static void AddConfiguredPaths(string p_installationPath, List<string> p_configuredPaths, List<string> p_target, List<string> p_trackingTarget)
@@ -1632,7 +2008,7 @@ namespace LR1Tools.Tester
 			string powerupMaterialAnimation = GetArrayValue(track.PowerupFiles, 1);
 			string auxiliaryPowerupScene = GetArrayValue(track.PowerupFiles, 2);
 
-			ResolveReferencedSingleAsset(p_selection, "RAB.TrackScene", track.MaybeTrackScene, new[] { ".WDB" }, p_selection.WdbPath, value => p_selection.WdbPath = value);
+			ResolveReferencedSingleAsset(p_selection, "RAB.TrackScene", track.TrackScene, new[] { ".WDB" }, p_selection.WdbPath, value => p_selection.WdbPath = value);
 			ResolveReferencedSingleAsset(p_selection, "RAB.SkyBox", track.SkyBoxFile, new[] { ".SKB" }, p_selection.SkbPath, value => p_selection.SkbPath = value);
 			ResolveReferencedSingleAsset(p_selection, "RAB.StartPos", track.StartPosFile, new[] { ".SPB" }, p_selection.SpbPath, value => p_selection.SpbPath = value);
 			ResolveReferencedSingleAsset(p_selection, "RAB.Hazard", track.HazardFile, new[] { ".HZB" }, p_selection.HzbPath, value => p_selection.HzbPath = value);
@@ -1655,11 +2031,11 @@ namespace LR1Tools.Tester
 				}
 			}
 
-			if (track.MaybeCollisionMeshes != null)
+			if (track.CollisionMeshes != null)
 			{
-				for (int i = 0; i < track.MaybeCollisionMeshes.Length; i++)
+				for (int i = 0; i < track.CollisionMeshes.Length; i++)
 				{
-					string reference = track.MaybeCollisionMeshes[i];
+					string reference = track.CollisionMeshes[i];
 					if (!string.IsNullOrWhiteSpace(reference))
 					{
 						ResolveCollisionReference(p_selection, "RAB.Collision[" + i + "]", reference);
@@ -1700,6 +2076,7 @@ namespace LR1Tools.Tester
 			ResolveReferencedGdbPaths(p_selection, wdbDirectory, GetReferencedNames(wdb.GDB2s), "WDB.GDB2");
 			ResolveReferencedCollisionPaths(p_selection, wdbDirectory, GetReferencedNames(wdb.BVBs), new[] { ".BVB" }, p_selection.CollisionBvbPaths, "WDB.BVB");
 			ResolveReferencedListAssets(p_selection, "WDB.MAB", GetReferencedNames(wdb.MABs), new[] { ".MAB" }, p_selection.MabPaths);
+			ResolveReferencedListAssets(p_selection, "WDB.ADB", GetReferencedNames(wdb.ADBs), new[] { ".ADB" }, p_selection.AdbPaths);
 			ResolveReferencedListAssets(p_selection, "WDB.MDB", GetReferencedNames(wdb.MDBs), new[] { ".MDB" }, p_selection.MdbPaths);
 			ResolveReferencedListAssets(p_selection, "WDB.TDB", GetReferencedNames(wdb.TDBs), new[] { ".TDB" }, p_selection.TdbPaths);
 			ResolveCollisionWdbReferencedAssets(p_selection);
@@ -1956,8 +2333,8 @@ namespace LR1Tools.Tester
 				return null;
 			}
 
-			string lastArgument = p_args[p_args.Length - 1];
-			return IsJsonPath(lastArgument) ? Path.GetFullPath(lastArgument) : null;
+			int outputArgumentIndex = GetOutputArgumentIndex(p_args);
+			return outputArgumentIndex >= 0 ? Path.GetFullPath(p_args[outputArgumentIndex]) : null;
 		}
 
 		private static string GetConfiguredOutputPath(string p_configuredOutputPath)
@@ -1968,6 +2345,57 @@ namespace LR1Tools.Tester
 		private static bool IsJsonPath(string p_path)
 		{
 			return !string.IsNullOrEmpty(p_path) && string.Equals(Path.GetExtension(p_path), ".json", StringComparison.OrdinalIgnoreCase);
+		}
+
+		private static bool HasExportTexturesFlag(string[] p_args)
+		{
+			if (p_args == null)
+			{
+				return false;
+			}
+
+			for (int i = 1; i < p_args.Length; i++)
+			{
+				if (IsExportTexturesFlag(p_args[i]))
+				{
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		private static int GetOutputArgumentIndex(string[] p_args)
+		{
+			if (p_args == null)
+			{
+				return -1;
+			}
+
+			for (int i = p_args.Length - 1; i >= 1; i--)
+			{
+				if (IsOptionFlag(p_args[i]))
+				{
+					continue;
+				}
+
+				if (IsJsonPath(p_args[i]))
+				{
+					return i;
+				}
+			}
+
+			return -1;
+		}
+
+		private static bool IsOptionFlag(string p_arg)
+		{
+			return IsExportTexturesFlag(p_arg);
+		}
+
+		private static bool IsExportTexturesFlag(string p_arg)
+		{
+			return string.Equals(p_arg, "--export-textures", StringComparison.OrdinalIgnoreCase);
 		}
 
 		private static string AssignSingleInput(string p_label, string p_resolvedPath, string p_existingPath)
@@ -2038,6 +2466,7 @@ namespace LR1Tools.Tester
 			AddMetadataArray(p_scene.Metadata, "Export.Input.CollisionBVB", p_selection.CollisionBvbPaths);
 			AddMetadataValue(p_scene.Metadata, "Export.Input.SKB", p_selection.SkbPath);
 			AddMetadataArray(p_scene.Metadata, "Export.Input.MAB", p_selection.MabPaths);
+			AddMetadataArray(p_scene.Metadata, "Export.Input.ADB", p_selection.AdbPaths);
 			AddMetadataValue(p_scene.Metadata, "Export.Input.SPB", p_selection.SpbPath);
 			AddMetadataValue(p_scene.Metadata, "Export.Input.CPB", p_selection.CpbPath);
 			AddMetadataValue(p_scene.Metadata, "Export.Input.HZB", p_selection.HzbPath);
@@ -2050,6 +2479,9 @@ namespace LR1Tools.Tester
 			AddMetadataArray(p_scene.Metadata, "Export.Input.RRB", p_selection.RrbPaths);
 			AddMetadataArray(p_scene.Metadata, "Export.Input.MDB", p_selection.MdbPaths);
 			AddMetadataArray(p_scene.Metadata, "Export.Input.TDB", p_selection.TdbPaths);
+			AddMetadataArray(p_scene.Metadata, "Export.Input.TexturePath", p_selection.TexturePaths);
+			AddMetadataArray(p_scene.Metadata, "Export.Input.Texture.Unresolved", p_selection.UnresolvedTextureReferences);
+			p_scene.Metadata["Export.TextureImagesEnabled"] = p_selection.ExportTextureImages ? "true" : "false";
 			AddMetadataArray(p_scene.Metadata, "Export.ResolvedAsset", p_selection.ResolvedAssetMessages);
 			AddMetadataArray(p_scene.Metadata, "Export.FailedParseAsset", p_selection.FailedParseMessages);
 			AddMetadataArray(p_scene.Metadata, "Export.SkippedAsset", p_selection.SkippedAssetMessages);
@@ -2068,6 +2500,7 @@ namespace LR1Tools.Tester
 			LogPathList("Unresolved GDB reference(s)", p_selection.UnresolvedGdbReferences);
 			Console.WriteLine("SKB: " + (!string.IsNullOrEmpty(p_selection.SkbPath) ? p_selection.SkbPath : "<none>"));
 			LogPathList("MAB(s)", p_selection.MabPaths);
+			LogPathList("ADB(s)", p_selection.AdbPaths);
 			Console.WriteLine("SPB: " + (!string.IsNullOrEmpty(p_selection.SpbPath) ? p_selection.SpbPath : "<none>"));
 			Console.WriteLine("CPB: " + (!string.IsNullOrEmpty(p_selection.CpbPath) ? p_selection.CpbPath : "<none>"));
 			Console.WriteLine("HZB: " + (!string.IsNullOrEmpty(p_selection.HzbPath) ? p_selection.HzbPath : "<none>"));
@@ -2076,9 +2509,12 @@ namespace LR1Tools.Tester
 			LogPathList("RRB(s)", p_selection.RrbPaths);
 			LogPathList("MDB(s)", p_selection.MdbPaths);
 			LogPathList("TDB(s)", p_selection.TdbPaths);
+			LogPathList("Texture path(s)", p_selection.TexturePaths);
+			LogPathList("Unresolved texture reference(s)", p_selection.UnresolvedTextureReferences);
 			LogPathList("Resolved referenced asset(s)", p_selection.ResolvedAssetMessages);
 			LogPathList("Failed to parse asset(s)", p_selection.FailedParseMessages);
 			LogPathList("Skipped referenced asset(s)", p_selection.SkippedAssetMessages);
+			Console.WriteLine("Export texture images: " + (p_selection.ExportTextureImages ? "true" : "false"));
 			Console.WriteLine("GDB(s): " + p_selection.GdbPaths.Count.ToString(CultureInfo.InvariantCulture));
 			Console.WriteLine("Output: " + p_outputPath);
 		}
@@ -2120,6 +2556,68 @@ namespace LR1Tools.Tester
 			}
 
 			return !p_gameFiles.AutoResolveReferencedAssets.HasValue || p_gameFiles.AutoResolveReferencedAssets.Value;
+		}
+
+		private static bool ResolveExportTextureImages(LocalGameFiles p_gameFiles)
+		{
+			string envValue = Environment.GetEnvironmentVariable("LR1TOOLS_EXPORT_TEXTURE_IMAGES");
+			bool parsedValue;
+			if (TryParseBoolean(envValue, out parsedValue))
+			{
+				return parsedValue;
+			}
+
+			return p_gameFiles.ExportTextureImages.HasValue && p_gameFiles.ExportTextureImages.Value;
+		}
+
+		private static void LogTextureWarnings(TrackScene p_scene)
+		{
+			if (p_scene == null || p_scene.Textures == null)
+			{
+				return;
+			}
+
+			List<string> warnings = new List<string>();
+			for (int i = 0; i < p_scene.Textures.Count; i++)
+			{
+				TrackTexture texture = p_scene.Textures[i];
+				if (texture == null)
+				{
+					continue;
+				}
+
+				string textureLabel = !string.IsNullOrWhiteSpace(texture.Name) ? texture.Name : texture.Id;
+				string missingSource;
+				if (texture.Metadata.TryGetValue("Export.MissingSource", out missingSource) && string.Equals(missingSource, "true", StringComparison.OrdinalIgnoreCase))
+				{
+					warnings.Add(textureLabel + ": source texture file is missing");
+				}
+
+				string unsupportedFormat;
+				if (texture.Metadata.TryGetValue("Export.UnsupportedSourceFormat", out unsupportedFormat) && !string.IsNullOrWhiteSpace(unsupportedFormat))
+				{
+					warnings.Add(textureLabel + ": unsupported source format " + unsupportedFormat);
+				}
+
+				string imageError;
+				if (texture.Metadata.TryGetValue("Export.ImageError", out imageError) && !string.IsNullOrWhiteSpace(imageError))
+				{
+					warnings.Add(textureLabel + ": failed to write decoded texture (" + imageError + ")");
+				}
+			}
+
+			if (warnings.Count == 0)
+			{
+				return;
+			}
+
+			Console.ForegroundColor = ConsoleColor.Yellow;
+			Console.WriteLine("Texture warnings:");
+			for (int i = 0; i < warnings.Count; i++)
+			{
+				Console.WriteLine("  [" + i.ToString(CultureInfo.InvariantCulture) + "] " + warnings[i]);
+			}
+			Console.ResetColor();
 		}
 
 		private static bool TryParseBoolean(string p_value, out bool p_result)
@@ -2183,6 +2681,39 @@ namespace LR1Tools.Tester
 			return File.Exists(installationCandidate) ? installationCandidate : null;
 		}
 
+		private static string ResolveExplicitFileOrDirectory(string p_installationPath, string p_inputPath)
+		{
+			if (string.IsNullOrWhiteSpace(p_inputPath))
+			{
+				return null;
+			}
+
+			if (Path.IsPathRooted(p_inputPath))
+			{
+				if (File.Exists(p_inputPath) || Directory.Exists(p_inputPath))
+				{
+					return Path.GetFullPath(p_inputPath);
+				}
+
+				return null;
+			}
+
+			string directCandidate = Path.GetFullPath(p_inputPath);
+			if (File.Exists(directCandidate) || Directory.Exists(directCandidate))
+			{
+				return directCandidate;
+			}
+
+			string repoCandidate = ResolveRepoPath(p_inputPath);
+			if (!string.IsNullOrEmpty(repoCandidate) && (File.Exists(repoCandidate) || Directory.Exists(repoCandidate)))
+			{
+				return repoCandidate;
+			}
+
+			string installationCandidate = Path.Combine(p_installationPath, p_inputPath);
+			return File.Exists(installationCandidate) || Directory.Exists(installationCandidate) ? Path.GetFullPath(installationCandidate) : null;
+		}
+
 		private static string ResolvePath(string p_installationPath, string p_configuredPath)
 		{
 			if (string.IsNullOrEmpty(p_configuredPath))
@@ -2203,6 +2734,16 @@ namespace LR1Tools.Tester
 
 			string repoCandidate = ResolveRepoFile(p_configuredPath);
 			return !string.IsNullOrEmpty(repoCandidate) && File.Exists(repoCandidate) ? repoCandidate : null;
+		}
+
+		private static void AddUnresolvedTextureReference(SceneExportSelection p_selection, string p_textureName)
+		{
+			if (p_selection == null || string.IsNullOrWhiteSpace(p_textureName))
+			{
+				return;
+			}
+
+			AddUniqueName(p_selection.UnresolvedTextureReferences, p_textureName);
 		}
 
 		private static string ResolveAliasedAsset(SceneExportSelection p_selection, string p_primaryDirectory, string p_reference, string[] p_extensions)
@@ -2259,7 +2800,138 @@ namespace LR1Tools.Tester
 
 			string extension = Path.GetExtension(p_textureName);
 			string[] candidateExtensions = string.IsNullOrEmpty(extension) ? new[] { ".BMP", ".TGA" } : new[] { extension };
+			List<string> candidateNames = BuildCandidateNames(Path.GetFileName(p_textureName.Trim()), candidateExtensions);
+
+			string explicitPath = ResolveFromExplicitTexturePaths(p_selection.TexturePaths, candidateNames);
+			if (!string.IsNullOrEmpty(explicitPath))
+			{
+				return explicitPath;
+			}
+
+			List<string> preferredRoots = GetPreferredTextureSearchRoots(p_selection);
+			for (int rootIndex = 0; rootIndex < preferredRoots.Count; rootIndex++)
+			{
+				string resolved = ResolveByCandidateNames(preferredRoots[rootIndex], candidateNames, SearchOption.TopDirectoryOnly);
+				if (!string.IsNullOrEmpty(resolved))
+				{
+					return resolved;
+				}
+			}
+
+			for (int rootIndex = 0; rootIndex < preferredRoots.Count; rootIndex++)
+			{
+				string resolved = ResolveByCandidateNames(preferredRoots[rootIndex], candidateNames, SearchOption.AllDirectories);
+				if (!string.IsNullOrEmpty(resolved))
+				{
+					return resolved;
+				}
+			}
+
 			return ResolveAliasedAsset(p_selection, GetPrimaryDirectory(p_selection), p_textureName, candidateExtensions);
+		}
+
+		private static string ResolveFromExplicitTexturePaths(IList<string> p_texturePaths, IList<string> p_candidateNames)
+		{
+			if (p_texturePaths == null || p_candidateNames == null)
+			{
+				return null;
+			}
+
+			for (int pathIndex = 0; pathIndex < p_texturePaths.Count; pathIndex++)
+			{
+				string path = p_texturePaths[pathIndex];
+				if (string.IsNullOrWhiteSpace(path))
+				{
+					continue;
+				}
+
+				if (File.Exists(path))
+				{
+					string fileName = Path.GetFileName(path);
+					for (int candidateIndex = 0; candidateIndex < p_candidateNames.Count; candidateIndex++)
+					{
+						if (string.Equals(fileName, p_candidateNames[candidateIndex], StringComparison.OrdinalIgnoreCase))
+						{
+							return Path.GetFullPath(path);
+						}
+					}
+
+					continue;
+				}
+
+				if (Directory.Exists(path))
+				{
+					string resolved = ResolveByCandidateNames(path, p_candidateNames, SearchOption.AllDirectories);
+					if (!string.IsNullOrEmpty(resolved))
+					{
+						return resolved;
+					}
+				}
+			}
+
+			return null;
+		}
+
+		private static List<string> GetPreferredTextureSearchRoots(SceneExportSelection p_selection)
+		{
+			List<string> roots = new List<string>();
+			AddUniqueDirectory(roots, GetPrimaryDirectory(p_selection));
+			AddUniqueDirectory(roots, GetSiblingCommonDirectory(p_selection));
+			AddUniqueDirectory(roots, GetCommonDirectory(p_selection));
+			AddUniqueDirectory(roots, GetInstallationCommonDirectory(p_selection));
+			AddUniqueDirectory(roots, GetGameDataRoot(p_selection.InstallationPath, GetPrimaryDirectory(p_selection)));
+			return roots;
+		}
+
+		private static string GetSiblingCommonDirectory(SceneExportSelection p_selection)
+		{
+			string primaryDirectory = GetPrimaryDirectory(p_selection);
+			if (string.IsNullOrEmpty(primaryDirectory))
+			{
+				return null;
+			}
+
+			DirectoryInfo parent = Directory.GetParent(primaryDirectory);
+			return parent != null ? Path.Combine(parent.FullName, "COMMON") : null;
+		}
+
+		private static string GetCommonDirectory(SceneExportSelection p_selection)
+		{
+			string gameDataRoot = GetGameDataRoot(p_selection.InstallationPath, GetPrimaryDirectory(p_selection));
+			return !string.IsNullOrEmpty(gameDataRoot) ? Path.Combine(gameDataRoot, "COMMON") : null;
+		}
+
+		private static string GetInstallationCommonDirectory(SceneExportSelection p_selection)
+		{
+			return !string.IsNullOrEmpty(p_selection.InstallationPath) ? Path.Combine(p_selection.InstallationPath, "COMMON") : null;
+		}
+
+		private static string ResolveByCandidateNames(string p_root, IList<string> p_candidateNames, SearchOption p_searchOption)
+		{
+			if (string.IsNullOrWhiteSpace(p_root) || !Directory.Exists(p_root) || p_candidateNames == null)
+			{
+				return null;
+			}
+
+			for (int candidateIndex = 0; candidateIndex < p_candidateNames.Count; candidateIndex++)
+			{
+				string candidatePath = Path.Combine(p_root, p_candidateNames[candidateIndex]);
+				if (File.Exists(candidatePath))
+				{
+					return Path.GetFullPath(candidatePath);
+				}
+
+				if (p_searchOption == SearchOption.AllDirectories)
+				{
+					string[] matches = Directory.GetFiles(p_root, p_candidateNames[candidateIndex], SearchOption.AllDirectories);
+					if (matches.Length > 0)
+					{
+						return matches[0];
+					}
+				}
+			}
+
+			return null;
 		}
 
 		private static List<string> BuildCandidateNames(string p_reference, string[] p_extensions)
@@ -2514,6 +3186,12 @@ namespace LR1Tools.Tester
 
 		private static string ResolveRepoFile(string p_relativePath)
 		{
+			string path = ResolveRepoPath(p_relativePath);
+			return !string.IsNullOrEmpty(path) && File.Exists(path) ? path : null;
+		}
+
+		private static string ResolveRepoPath(string p_relativePath)
+		{
 			string[] candidates = new string[]
 			{
 				Path.Combine(Directory.GetCurrentDirectory(), p_relativePath),
@@ -2524,7 +3202,7 @@ namespace LR1Tools.Tester
 
 			for (int i = 0; i < candidates.Length; i++)
 			{
-				if (File.Exists(candidates[i]))
+				if (File.Exists(candidates[i]) || Directory.Exists(candidates[i]))
 				{
 					return candidates[i];
 				}
@@ -2540,6 +3218,7 @@ namespace LR1Tools.Tester
 			public List<string> GdbPaths { get; set; }
 			public string SkbPath { get; set; }
 			public List<string> MabPaths { get; set; }
+			public List<string> AdbPaths { get; set; }
 			public string SpbPath { get; set; }
 			public string CpbPath { get; set; }
 			public List<string> PwbPaths { get; set; }
@@ -2548,9 +3227,11 @@ namespace LR1Tools.Tester
 			public List<string> RrbPaths { get; set; }
 			public List<string> MdbPaths { get; set; }
 			public List<string> TdbPaths { get; set; }
+			public List<string> TexturePaths { get; set; }
 			public string OutputPath { get; set; }
 			public bool? AutoResolveGdbReferences { get; set; }
 			public bool? AutoResolveReferencedAssets { get; set; }
+			public bool? ExportTextureImages { get; set; }
 		}
 
 		private sealed class SceneExportSelection
@@ -2558,6 +3239,7 @@ namespace LR1Tools.Tester
 			public string InstallationPath { get; set; }
 			public bool AutoResolveGdbReferences { get; set; }
 			public bool AutoResolveReferencedAssets { get; set; }
+			public bool ExportTextureImages { get; set; }
 			public string PrimaryInputPath { get; set; }
 			public string SceneName { get; set; }
 			public string RabPath { get; set; }
@@ -2571,6 +3253,7 @@ namespace LR1Tools.Tester
 			public List<string> CollisionBvbPaths { get; private set; }
 			public string SkbPath { get; set; }
 			public List<string> MabPaths { get; private set; }
+			public List<string> AdbPaths { get; private set; }
 			public string SpbPath { get; set; }
 			public string CpbPath { get; set; }
 			public List<string> PwbPaths { get; private set; }
@@ -2579,9 +3262,11 @@ namespace LR1Tools.Tester
 			public List<string> RrbPaths { get; private set; }
 			public List<string> MdbPaths { get; private set; }
 			public List<string> TdbPaths { get; private set; }
+			public List<string> TexturePaths { get; private set; }
 			public List<string> ResolvedAssetMessages { get; private set; }
 			public List<string> FailedParseMessages { get; private set; }
 			public List<string> SkippedAssetMessages { get; private set; }
+			public List<string> UnresolvedTextureReferences { get; private set; }
 			public string OutputPath { get; set; }
 
 			public SceneExportSelection()
@@ -2594,14 +3279,17 @@ namespace LR1Tools.Tester
 				CollisionGdbPaths = new List<string>();
 				CollisionBvbPaths = new List<string>();
 				MabPaths = new List<string>();
+				AdbPaths = new List<string>();
 				PwbPaths = new List<string>();
 				EmbPaths = new List<string>();
 				RrbPaths = new List<string>();
 				MdbPaths = new List<string>();
 				TdbPaths = new List<string>();
+				TexturePaths = new List<string>();
 				ResolvedAssetMessages = new List<string>();
 				FailedParseMessages = new List<string>();
 				SkippedAssetMessages = new List<string>();
+				UnresolvedTextureReferences = new List<string>();
 			}
 		}
 	}

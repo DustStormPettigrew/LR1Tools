@@ -7,6 +7,7 @@ namespace LR1Tools.Contracts
 		public const string ObjectSet = "ObjectSet";
 		public const string PathSet = "PathSet";
 		public const string MaterialSet = "MaterialSet";
+		public const string AnimationSet = "AnimationSet";
 		public const string AssetBundle = "AssetBundle";
 	}
 }

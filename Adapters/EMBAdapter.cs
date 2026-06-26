@@ -54,8 +54,8 @@ namespace LR1Tools.Adapters
 				return obj;
 			}
 
-			obj.Metadata["Size"] = p_source.Size.ToString("R", CultureInfo.InvariantCulture);
-			obj.Metadata["Unknown29"] = p_source.Unknown29.ToString("R", CultureInfo.InvariantCulture);
+			obj.Metadata["ParticleCount"] = p_source.ParticleCount.ToString("R", CultureInfo.InvariantCulture);
+			obj.Metadata["ParticleType"] = p_source.ParticleType.ToString("R", CultureInfo.InvariantCulture);
 			obj.Metadata["Direction"] = AdapterCommon.FormatVector3(p_source.Direction);
 			obj.Metadata["ScaleMin"] = p_source.ScaleMin.ToString("R", CultureInfo.InvariantCulture);
 			obj.Metadata["ScaleMax"] = p_source.ScaleMax.ToString("R", CultureInfo.InvariantCulture);

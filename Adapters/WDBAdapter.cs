@@ -221,6 +221,8 @@ namespace LR1Tools.Adapters
 
 				obj.Metadata["ADBIndex"] = p_model.ModelRef.IndexADB.ToString(CultureInfo.InvariantCulture);
 				obj.Metadata["ADBName"] = AdapterCommon.ResolveName(p_source.ADBs, p_model.ModelRef.IndexADB, "ADB");
+				obj.AnimationRef = obj.Metadata["ADBName"];
+				obj.AnimationSourceName = obj.Metadata["ADBName"];
 				obj.Metadata["SDBIndex"] = p_model.ModelRef.IndexSDB.ToString(CultureInfo.InvariantCulture);
 				obj.Metadata["SDBName"] = AdapterCommon.ResolveName(p_source.SDBs, p_model.ModelRef.IndexSDB, "SDB");
 				obj.Metadata["ModelUnknown"] = p_model.ModelRef.Unknown.ToString("R", CultureInfo.InvariantCulture);

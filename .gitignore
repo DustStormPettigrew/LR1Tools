@@ -464,3 +464,36 @@ $RECYCLE.BIN/
 # AI Agents
 AGENTS.md
 CLAUDE.md
+
+# Local machine info
+locals.json
+
+# Local underscore-prefixed folders
+_*/
+
+# Local reports and extracted LEGO Racers game data
+*-Tree_*.txt
+*.bak
+*.ADB
+*.BDB
+*.CDB
+*.CPB
+*.DDB
+*.EDB
+*.EMB
+*.GDB
+*.JAM
+*.LEB
+*.LRS
+*.MAB
+*.MDB
+*.MIB
+*.MSB
+*.PDB
+*.PWB
+*.RDB
+*.SDB
+*.TDB
+*.TIB
+*.TRB
+*.WDB

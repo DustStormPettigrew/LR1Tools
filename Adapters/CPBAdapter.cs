@@ -26,15 +26,15 @@ namespace LR1Tools.Adapters
 				if (checkpoint != null && checkpoint.Direction != null)
 				{
 					obj.Metadata["DirectionNormal"] = AdapterCommon.FormatVector3(checkpoint.Direction.Normal);
-					obj.Metadata["DirectionUnknown"] = checkpoint.Direction.Unknown.ToString("R", CultureInfo.InvariantCulture);
+					obj.Metadata["PlaneOffset"] = checkpoint.Direction.PlaneOffset.ToString("R", CultureInfo.InvariantCulture);
 				}
 
-				if (checkpoint != null && checkpoint.Timing != null)
+				if (checkpoint != null && checkpoint.NextLinks != null)
 				{
-					obj.Metadata["Timing.Unknown1"] = checkpoint.Timing.Unknown1.ToString(CultureInfo.InvariantCulture);
-					obj.Metadata["Timing.Unknown2"] = checkpoint.Timing.Unknown2.ToString(CultureInfo.InvariantCulture);
-					obj.Metadata["Timing.Unknown3"] = checkpoint.Timing.Unknown3.ToString(CultureInfo.InvariantCulture);
-					obj.Metadata["Timing.Unknown4"] = checkpoint.Timing.Unknown4.ToString(CultureInfo.InvariantCulture);
+					obj.Metadata["NextLinks.NextPrimary"] = checkpoint.NextLinks.NextPrimary.ToString(CultureInfo.InvariantCulture);
+					obj.Metadata["NextLinks.NextAlternate1"] = checkpoint.NextLinks.NextAlternate1.ToString(CultureInfo.InvariantCulture);
+					obj.Metadata["NextLinks.NextAlternate2"] = checkpoint.NextLinks.NextAlternate2.ToString(CultureInfo.InvariantCulture);
+					obj.Metadata["NextLinks.UnusedNextLink"] = checkpoint.NextLinks.UnusedNextLink.ToString(CultureInfo.InvariantCulture);
 				}
 
 				output.Add(obj);

@@ -11,13 +11,23 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\LibLR1\LibLR1\LibLR1.csproj" />
+    <ProjectReference Include="..\LibLR1\LibLR1.csproj" />
+    <PackageReference Include="YamlDotNet" Version="16.3.0" />
   </ItemGroup>
 
   <ItemGroup>
     <Compile Remove="Tester\**\*.cs" />
     <EmbeddedResource Remove="Tester\**\*" />
     <None Remove="Tester\**\*" />
+    <Compile Remove="RacerAssetExtractor\**\*.cs" />
+    <EmbeddedResource Remove="RacerAssetExtractor\**\*" />
+    <None Remove="RacerAssetExtractor\**\*" />
+    <Compile Remove="CSetEditor\**\*.cs" />
+    <Compile Remove="BrickManifest\**\*.cs" />
+    <Compile Remove="JamTool\**\*.cs" />
+    <Compile Remove="TRBPropertyDump\**\*.cs" />
+    <Compile Remove="CPBPropertyDump\**\*.cs" />
+    <Compile Remove="TIBPropertyDump\**\*.cs" />
   </ItemGroup>
 
 </Project>

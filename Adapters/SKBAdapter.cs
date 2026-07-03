@@ -27,6 +27,7 @@ namespace LR1Tools.Adapters
 
 			if (p_source.UnknownFloat.HasValue)
 			{
+				scene.Metadata["HorizonOffset"] = p_source.HorizonOffset.Value.ToString("R", CultureInfo.InvariantCulture);
 				scene.Metadata["UnknownFloat"] = p_source.UnknownFloat.Value.ToString("R", CultureInfo.InvariantCulture);
 			}
 

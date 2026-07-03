@@ -241,6 +241,7 @@ namespace LR1Tools.Adapters
 				);
 			}
 
+			obj.Metadata["InteractionBehaviorType"] = p_model.InteractionBehaviorType.ToString(CultureInfo.InvariantCulture);
 			obj.Metadata["Unknown35"] = p_model.Unknown_35.ToString(CultureInfo.InvariantCulture);
 			obj.Metadata["Unknown42"] = p_model.Unknown_42 ? "true" : "false";
 			obj.Metadata["Unknown4C"] = p_model.Unknown_4C ? "true" : "false";
@@ -288,6 +289,10 @@ namespace LR1Tools.Adapters
 
 			obj.MaterialName = p_billboard.TextureName ?? string.Empty;
 			obj.Transform.Position = AdapterCommon.ToVector3(p_billboard.Position);
+			obj.Metadata["PivotAxis"] = AdapterCommon.FormatVector3(p_billboard.PivotAxis);
+			obj.Metadata["Width"] = p_billboard.Width.ToString("R", CultureInfo.InvariantCulture);
+			obj.Metadata["Height"] = p_billboard.Height.ToString("R", CultureInfo.InvariantCulture);
+			obj.Metadata["CullRadius"] = p_billboard.CullRadius.ToString("R", CultureInfo.InvariantCulture);
 			obj.Metadata["Unknown38"] = AdapterCommon.FormatVector3(p_billboard.Unknown38);
 			obj.Metadata["Unknown3A"] = p_billboard.Unknown3A.ToString("R", CultureInfo.InvariantCulture);
 			obj.Metadata["Unknown3B"] = p_billboard.Unknown3B.ToString("R", CultureInfo.InvariantCulture);

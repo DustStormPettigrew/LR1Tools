@@ -26,10 +26,11 @@ namespace LR1Tools.CSetEditor
 			string outputPath = Value(p_args, "--output") ?? csetPath;
 			string piece = Value(p_args, "--piece");
 			List<string> colors = Values(p_args, "--color");
+			bool allowNewPiece = HasFlag(p_args, "--allow-new-piece");
 			if (string.IsNullOrWhiteSpace(csetPath) || string.IsNullOrWhiteSpace(piece) || colors.Count == 0) throw new ArgumentException("--cset-file, --piece, and at least one --color are required.");
 			if (!File.Exists(csetPath)) throw new FileNotFoundException("CSET file was not found.", csetPath);
 			CSet cset = Tool.Load(csetPath);
-			if (!cset.ValidColorsByPiece.ContainsKey(piece)) throw new InvalidDataException("Piece is not present in this CSET: " + piece);
+			if (!allowNewPiece && !cset.ValidColorsByPiece.ContainsKey(piece)) throw new InvalidDataException("Piece is not present in this CSET: " + piece);
 			string palettePath = Value(p_args, "--palette-file") ?? Path.Combine(Path.GetDirectoryName(Path.GetFullPath(csetPath)), "L_COLORS.LEB");
 			if (!File.Exists(palettePath)) throw new FileNotFoundException("L_COLORS.LEB must be beside the CSET file.", palettePath);
 			LColors palette = new LColors(palettePath);
@@ -37,7 +38,7 @@ namespace LR1Tools.CSetEditor
 			foreach (string color in colors)
 			{
 				if (palette.IndexOf(color) < 0) throw new InvalidDataException("Unknown L_COLORS name: " + color);
-				if (cset.ValidColorsByPiece[piece].Contains(color)) continue;
+				if (cset.ValidColorsByPiece.TryGetValue(piece, out HashSet<string> existingColors) && existingColors.Contains(color)) continue;
 				cset.AddEntry(piece, color);
 				added++;
 			}
@@ -100,10 +101,11 @@ namespace LR1Tools.CSetEditor
 
 		private static string Value(string[] p_args, string p_name) { for (int i = 1; i + 1 < p_args.Length; i++) if (p_args[i].Equals(p_name, StringComparison.OrdinalIgnoreCase)) return p_args[i + 1]; return null; }
 		private static List<string> Values(string[] p_args, string p_name) { List<string> values = new List<string>(); for (int i = 1; i + 1 < p_args.Length; i++) if (p_args[i].Equals(p_name, StringComparison.OrdinalIgnoreCase)) values.Add(p_args[i + 1]); return values; }
+		private static bool HasFlag(string[] p_args, string p_name) { for (int i = 1; i < p_args.Length; i++) if (p_args[i].Equals(p_name, StringComparison.OrdinalIgnoreCase)) return true; return false; }
 		private static void PrintHelp()
 		{
 			Console.WriteLine("Usage:");
-			Console.WriteLine("  LR1Tools.CSetEditor add-color --cset-file <file> --piece <name> --color <color> [--color <color> ...] [--output <file>] [--palette-file <L_COLORS.LEB>]");
+			Console.WriteLine("  LR1Tools.CSetEditor add-color --cset-file <file> --piece <name> --color <color> [--color <color> ...] [--output <file>] [--palette-file <L_COLORS.LEB>] [--allow-new-piece]");
 			Console.WriteLine("  LR1Tools.CSetEditor add-all-colors --cset-file <file> [--cset-file <file> ...] [--output-dir <dir>] [--palette-file <L_COLORS.LEB>]");
 		}
 	}

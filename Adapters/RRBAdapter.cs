@@ -99,18 +99,21 @@ namespace LR1Tools.Adapters
 				return;
 			}
 
+			AdapterCommon.AddMetadata(p_metadata, "InitialRotation", AdapterCommon.FormatQuaternion(p_source.InitialRotation));
 			AdapterCommon.AddMetadata(p_metadata, "Unknown28", AdapterCommon.FormatQuaternion(p_source.Unknown28));
+			AdapterCommon.AddMetadata(p_metadata, "InitialPosition", AdapterCommon.FormatVector3(p_source.InitialPosition));
 			AdapterCommon.AddMetadata(p_metadata, "Unknown29", AdapterCommon.FormatVector3(p_source.Unknown29));
 			AdapterCommon.AddMetadata(p_metadata, "Unknown2A", AdapterCommon.FormatVector3(p_source.Unknown2A));
 			AdapterCommon.AddMetadata(p_metadata, "Unknown2B", AdapterCommon.FormatQuaternion(p_source.Unknown2B));
 			AdapterCommon.AddMetadata(p_metadata, "Unknown2C", p_source.Unknown2C);
+			AdapterCommon.AddMetadata(p_metadata, "FirstActiveNodeIndex", p_source.FirstActiveNodeIndex);
 			AdapterCommon.AddMetadata(p_metadata, "Unknown2D", p_source.Unknown2D);
 		}
 
 		private static List<TrackPathNode> BuildPathNodes(RRB p_source)
 		{
 			List<TrackPathNode> nodes = new List<TrackPathNode>();
-			Vector3 position = AdapterCommon.ToVector3(p_source != null ? p_source.Unknown29 : null);
+			Vector3 position = AdapterCommon.ToVector3(p_source != null ? p_source.InitialPosition : null);
 			RRB_Node[] sourceNodes = p_source != null && p_source.Nodes != null ? p_source.Nodes : new RRB_Node[0];
 
 			for (int i = 0; i < sourceNodes.Length; i++)

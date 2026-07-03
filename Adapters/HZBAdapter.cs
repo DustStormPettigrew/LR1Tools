@@ -22,6 +22,10 @@ namespace LR1Tools.Adapters
 				AdapterCommon.SetObjectProvenance(obj, "HZB", obj.Name, obj.Name, i.ToString(CultureInfo.InvariantCulture), i);
 				obj.Metadata["NativeType"] = "Hazard";
 				obj.Metadata["HazardType"] = string.Format(CultureInfo.InvariantCulture, "0x{0:X2}", entry != null ? entry.Type : (byte)0);
+				if (entry != null && entry.NativeRole != HZB_EntryNativeRole.Unknown)
+				{
+					obj.Metadata["HazardNativeRole"] = entry.NativeRole.ToString();
+				}
 
 				ApplyRepresentativeTransform(obj, entry);
 				AddHazardMetadata(obj.Metadata, entry);

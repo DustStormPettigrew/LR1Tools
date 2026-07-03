@@ -327,7 +327,7 @@ namespace LR1Tools.Adapters
 					segment.VertexMeta = vertexMeta;
 					segment.VertexStart = vertexMeta != null ? vertexMeta.Offset : 0;
 					segment.VertexLength = vertexMeta != null ? vertexMeta.Length : 0;
-					segment.VertexOffset = vertexMeta != null ? vertexMeta.UnknownByte : 0;
+					segment.VertexOffset = vertexMeta != null ? vertexMeta.VertexIndexOffset : 0;
 					segment.BoneMeta = boneMeta;
 					segment.Meta2F = meta2F;
 					segment.HasMeta30 = hasMeta30;
@@ -502,6 +502,7 @@ namespace LR1Tools.Adapters
 			p_metadata[prefix + ".Length"] = p_segment.Length.ToString(CultureInfo.InvariantCulture);
 			p_metadata[prefix + ".VertexStart"] = p_segment.VertexStart.ToString(CultureInfo.InvariantCulture);
 			p_metadata[prefix + ".VertexLength"] = p_segment.VertexLength.ToString(CultureInfo.InvariantCulture);
+			p_metadata[prefix + ".VertexIndexOffset"] = p_segment.VertexOffset.ToString(CultureInfo.InvariantCulture);
 			p_metadata[prefix + ".VertexOffset"] = p_segment.VertexOffset.ToString(CultureInfo.InvariantCulture);
 
 			if (p_segment.MaterialId >= 0)
@@ -564,6 +565,7 @@ namespace LR1Tools.Adapters
 				GDB_Meta_Vertices vertices = meta[i] as GDB_Meta_Vertices;
 				if (vertices != null)
 				{
+					p_metadata[prefix + ".VertexIndexOffset"] = vertices.VertexIndexOffset.ToString(CultureInfo.InvariantCulture);
 					p_metadata[prefix + ".UnknownByte"] = vertices.UnknownByte.ToString(CultureInfo.InvariantCulture);
 					p_metadata[prefix + ".Offset"] = vertices.Offset.ToString(CultureInfo.InvariantCulture);
 					p_metadata[prefix + ".Length"] = vertices.Length.ToString(CultureInfo.InvariantCulture);

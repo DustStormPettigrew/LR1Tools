@@ -241,7 +241,7 @@ namespace LR1Tools.Adapters
 				);
 			}
 
-			obj.Metadata["InteractionBehaviorType"] = p_model.InteractionBehaviorType.ToString(CultureInfo.InvariantCulture);
+			obj.Metadata["AnimationSelector"] = p_model.AnimationSelector.ToString(CultureInfo.InvariantCulture);
 			obj.Metadata["Unknown35"] = p_model.Unknown_35.ToString(CultureInfo.InvariantCulture);
 			obj.Metadata["Unknown42"] = p_model.Unknown_42 ? "true" : "false";
 			obj.Metadata["Unknown4C"] = p_model.Unknown_4C ? "true" : "false";

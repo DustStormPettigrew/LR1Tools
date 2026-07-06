@@ -116,7 +116,10 @@ namespace LR1Tools.Adapters
 			Vector3 position = AdapterCommon.ToVector3(p_source != null ? p_source.InitialPosition : null);
 			RRB_Node[] sourceNodes = p_source != null && p_source.Nodes != null ? p_source.Nodes : new RRB_Node[0];
 
-			for (int i = 0; i < sourceNodes.Length; i++)
+			int firstActiveNodeIndex = p_source != null
+				? Clamp(p_source.FirstActiveNodeIndex, 0, sourceNodes.Length)
+				: 0;
+			for (int i = firstActiveNodeIndex; i < sourceNodes.Length; i++)
 			{
 				RRB_Node nativeNode = sourceNodes[i];
 				LRQuaternion rotation = new LRQuaternion(
@@ -136,7 +139,8 @@ namespace LR1Tools.Adapters
 				pathNode.Position = position;
 				pathNode.Forward = AdapterCommon.RotateForward(rotation);
 				pathNode.Up = AdapterCommon.RotateUp(rotation);
-				pathNode.Metadata["NodeIndex"] = i.ToString();
+				pathNode.Metadata["PathNodeIndex"] = (i - firstActiveNodeIndex).ToString(CultureInfo.InvariantCulture);
+				pathNode.Metadata["NativeNodeIndex"] = i.ToString(CultureInfo.InvariantCulture);
 				pathNode.Metadata["DeltaX"] = GetAsFloat(nativeNode.DeltaX).ToString("R", CultureInfo.InvariantCulture);
 				pathNode.Metadata["DeltaY"] = GetAsFloat(nativeNode.DeltaY).ToString("R", CultureInfo.InvariantCulture);
 				pathNode.Metadata["DeltaZ"] = GetAsFloat(nativeNode.DeltaZ).ToString("R", CultureInfo.InvariantCulture);
@@ -148,6 +152,19 @@ namespace LR1Tools.Adapters
 			}
 
 			return nodes;
+		}
+
+		private static int Clamp(int p_value, int p_min, int p_max)
+		{
+			if (p_value < p_min)
+			{
+				return p_min;
+			}
+			if (p_value > p_max)
+			{
+				return p_max;
+			}
+			return p_value;
 		}
 
 		private static float GetAsFloat(Fract8Bit p_value)
